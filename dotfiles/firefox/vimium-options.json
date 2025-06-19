@@ -1,0 +1,33 @@
+{
+  "settingsVersion": "2.2.1",
+  "exclusionRules": [
+    {
+      "passKeys": "",
+      "pattern": "https?://mail.google.com/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://colab.*.com/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://localhost:*/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://leetcode.com/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://codesignal.com/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://app.codesignal.com/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://neetcode.io/*"
+    }
+  ]
+}

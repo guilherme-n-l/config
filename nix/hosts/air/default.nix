@@ -1,11 +1,13 @@
-{ self, cenfig, nixpkgs, nix-homebrew, homebrew-cask, ... }:
+{ self, config, nixpkgs, nix-homebrew, homebrew-cask, ... }:
 
 let
-user = "guilh";
+variables = import ./../../modules/shared/variables.nix;
+
 pkgs = import nixpkgs {
-	system = "aarch64-darwin";
+	system = variables.darwinArch;
 	config.allowUnfree = true;
 };
+
 packages = import ./packages.nix { inherit pkgs; };
 in
 {
@@ -16,19 +18,11 @@ in
 	];
 
 	config = {
-		system = {
-			primaryUser = user;
-			configurationRevision = self.rev or self.dirtyRev or null;
-			stateVersion = 6;
-		};
-
 		nix-homebrew = {
-			inherit user;
+			user = variables.user ;
 			enable = true;
 			enableRosetta = true;
-			taps = {
-				"homebrew/homebrew-cask" = homebrew-cask;
-			};
+			taps = { "homebrew/homebrew-cask" = homebrew-cask; };
 			mutableTaps = false;
 		};
 
@@ -38,7 +32,7 @@ in
 			caskArgs.no_quarantine = true;
 		};
 
-		nixpkgs.hostPlatform = "aarch64-darwin";
+		nixpkgs.hostPlatform = variables.darwinArch;
 		environment.systemPackages = packages.pkgs;
 	};
 	
