@@ -1,4 +1,4 @@
-{ self, config, nixpkgs, nix-homebrew, homebrew-cask, ... }:
+{ self, inputs, nixpkgs, ... }:
 
 let
 variables = import ./../../modules/shared/variables.nix;
@@ -12,7 +12,7 @@ packages = import ./packages.nix { inherit pkgs; };
 in
 {
 	imports = [
-		nix-homebrew.darwinModules.nix-homebrew
+		inputs.nix-homebrew.darwinModules.nix-homebrew
 		./preferences.nix
 		./../../modules/shared
 	];
@@ -22,7 +22,7 @@ in
 			user = variables.user ;
 			enable = true;
 			enableRosetta = true;
-			taps = { "homebrew/homebrew-cask" = homebrew-cask; };
+			taps = { "homebrew/homebrew-cask" = inputs.homebrew-cask; };
 			mutableTaps = false;
 		};
 

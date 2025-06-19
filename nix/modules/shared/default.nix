@@ -1,30 +1,33 @@
-{ self, config, pkgs, user, ... }:
+{ self, inputs, pkgs, ... }:
 
 let
 variables = import ./variables.nix;
 in
 {
-	nix.settings.experimental-features = "nix-command flakes";
+    nix.settings.experimental-features = "nix-command flakes";
 
-	system = {
-		primaryUser = variables.user;
-		configurationRevision = self.rev or self.dirtyRev or null;
-		stateVersion = 6;
-	};
+    system = {
+        primaryUser = variables.user;
+        configurationRevision = self.rev or self.dirtyRev or null;
+        stateVersion = 6;
+    };
 
-	environment.systemPackages = with pkgs; [
-		neovim
-			git
-			lazygit
-			curl
-			wget
-			yazi
-			fzf
-			fd
-	];
+    environment.systemPackages = with pkgs; [
+        neovim
+            git
+            lazygit
+            curl
+            wget
+            yazi
+            fzf
+            fd
+            stow
+            tree
+            ripgrep
+            inputs.wezterm.packages.${pkgs.system}.default
+    ];
 
-	fonts.packages = with pkgs; [
-		nerd-fonts.fira-code
-	];
-
+    fonts.packages = with pkgs; [
+        nerd-fonts.fira-code
+    ];
 }
