@@ -11,6 +11,7 @@ in
 {
 	imports = [
 		nix-homebrew.darwinModules.nix-homebrew
+		./preferences.nix
 		./../../modules/shared
 	];
 
