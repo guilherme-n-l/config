@@ -2,6 +2,8 @@
 
 {
     system.defaults = {
+        finder.FXPreferredViewStyle = "clmv";
+
         dock = {
             persistent-apps = [];
             persistent-others = [];
@@ -11,6 +13,8 @@
             showhidden = true;
         };
 
+        screencapture.location = "~/Pictures/Screenshots";
+
         NSGlobalDomain = {
             "com.apple.keyboard.fnState" = true;
             ApplePressAndHoldEnabled = false;
@@ -19,10 +23,14 @@
         };
 
         CustomUserPreferences = {
-            "com.apple.desktop"."com.apple.desktop.background.showAsScreenSaver" = false;
+            "com.apple.CloudSubscriptionFeatures.optIn"."545129924" = false; # Disable Intelligence
+            "com.apple.HIToolbox"."AppleFnUsageType" = 0; # Disable fn Lock
+            "com.apple.dock"."show-recents" = false; # Disable recentes in dock
+            "com.apple.finder"."CreateDesktop" = false; # Hide desktop icons
         };
 
     };
+
     system.keyboard = {
         enableKeyMapping = true;
         remapCapsLockToEscape = true;

@@ -2,6 +2,7 @@
 
 let
 variables = import ./variables.nix;
+
 aliases = {
 # System Shutdown/Reboot
     sd = "sudo shutdown -h now";
@@ -26,14 +27,12 @@ aliases = {
     gwa = "git worktree add";
     gwr = "git worktree remove";
     gwl = "git worktree list";
-
-# Nix
-    
 };
 
 functions = {
+# Nix
     rebuild = ''{
-        stow --dir=$CONFIG_PATH/dotfiles --target=$HOME ;\
+        stow -d "$CONFIG_PATH/dotfiles" -t "$HOME" $(basename -a "$CONFIG_PATH/dotfiles/"*) ;\
         sudo darwin-rebuild switch --flake $CONFIG_PATH/#$1
     }'';
 };
@@ -48,10 +47,16 @@ binds = {
     "^R" = "history-incremental-search-backward";
     "^F" = "fcd_widget";
 };
+
+env = {
+    CONFIG_PATH = "~/config";
+};
+
 envPath = {
     "$HOME/.go" = "bin";
     "$HOME/.bun" = "bin";
 };
+
 toShellStatements = { keyword, separator, quoteValue, kvp, quoteKeyIfSpecial ? false, terminator ? "\n" }:
 pkgs.lib.concatStringsSep "${terminator}" (pkgs.lib.mapAttrsToList (n: v:
             let
@@ -65,6 +70,14 @@ pkgs.lib.concatStringsSep "${terminator}" (pkgs.lib.mapAttrsToList (n: v:
             in
             ''${keyword}${finalKey}${separator}${valuePart}''
             ) kvp);
+
+envString = toShellStatements {
+    keyword = "";
+    separator = "=";
+    quoteValue = false;
+    kvp = env;
+    quoteKeyIfSpecial = false;
+};
 aliasesString = toShellStatements {
     keyword = "alias ";
     separator = "=";
@@ -94,7 +107,7 @@ functionsString = toShellStatements {
 };
     in
     with variables; {
-        environment.systemPackages = with pkgs; [ stow fzf ];
+        environment.systemPackages = with pkgs; [ stow fzf zinit ];
 
         programs.zsh = {
             enable = true;
@@ -104,12 +117,13 @@ functionsString = toShellStatements {
             enableSyntaxHighlighting = true;
             enableFzfCompletion = true;
             variables = {
-                DYLD_LIBRARY_PATH = "/usr/local/lib";
                 EDITOR = "nvim";
-                CONFIG_PATH = "~/config";
+                DYLD_LIBRARY_PATH = "/usr/local/lib";
             };
             promptInit = ''
             PATH="${pathString}"
+
+            ${envString}
 
             ${aliasesString}
 
