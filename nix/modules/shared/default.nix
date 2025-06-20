@@ -3,13 +3,24 @@
 let
 variables = import ./variables.nix;
 in
-{
+with variables; {
+    imports = [ ./usrShell.nix ];
+
     nix.settings.experimental-features = "nix-command flakes";
 
     system = {
-        primaryUser = variables.user;
+        primaryUser = user;
         configurationRevision = self.rev or self.dirtyRev or null;
         stateVersion = 6;
+    };
+
+    users.users = {
+        "${user}" = {
+            name = user;
+            home = "/Users/" + user;
+            uid = 501;
+            createHome = true;
+        };
     };
 
     environment.systemPackages = with pkgs; [

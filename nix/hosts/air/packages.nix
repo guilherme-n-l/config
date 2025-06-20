@@ -3,6 +3,7 @@
 {
   casks = [
     "librewolf"
+    "desktoppr"
     "keepassxc"
   ];
 

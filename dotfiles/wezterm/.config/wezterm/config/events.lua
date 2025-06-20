@@ -2,7 +2,7 @@ local module = {}
 local wt = require("wezterm")
 
 local mux = wt.mux
-function module.apply(config)
+function module.apply(_)
 	wt.on("update-right-status", function(window, _)
 		local prefix = window:leader_is_active() and "$W" or "$"
 		local ws = mux.get_active_workspace()
