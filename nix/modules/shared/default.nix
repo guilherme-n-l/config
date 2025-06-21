@@ -35,6 +35,7 @@ with variables; {
             stow
             tree
             ripgrep
+            zoxide
             inputs.wezterm.packages.${pkgs.system}.default
     ];
 
