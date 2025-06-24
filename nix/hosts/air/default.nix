@@ -1,4 +1,4 @@
-{ self, inputs, nixpkgs, ... }:
+{ inputs, nixpkgs, ... }:
 
 let
 variables = import ./../../modules/shared/variables.nix;
@@ -18,8 +18,23 @@ in
 	];
 
 	config = {
-		nix-homebrew = {
-			user = variables.user ;
+        system = with variables; {
+            primaryUser = user;
+            configurationRevision = inputs.self.rev or inputs.self.dirtyRev or null;
+            stateVersion = 6;
+        };
+
+        users.users = with variables; {
+            "${user}" = {
+                name = user;
+                home = "/Users/" + user;
+                uid = 501;
+                createHome = true;
+            };
+        };
+
+		nix-homebrew = with variables; {
+			user = user ;
 			enable = true;
 			enableRosetta = true;
 			taps = { "homebrew/homebrew-cask" = inputs.homebrew-cask; };
@@ -30,6 +45,7 @@ in
 			enable = true;
 			casks = packages.casks;
 			caskArgs.no_quarantine = true;
+            # onActivation.cleanup = "zap";
 		};
 
 		nixpkgs.hostPlatform = variables.darwinArch;

@@ -80,6 +80,17 @@ functions = {
     zread = ''{
         nh zathura $@
     }'';
+    nsh = ''{
+        path="$CONFIG_PATH/nix/shells"
+        sh="$path/$1.nix"
+
+        if [ -f "$sh" ]; then
+            nix-shell "$sh"
+        else
+            echo "Shell not found. Available shells:"
+            ls "$path"/*.nix
+        fi
+    }'';
 };
 
 sources = {

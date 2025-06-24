@@ -14,12 +14,11 @@
 		};
 	};
 
-	outputs = inputs@{ self, nix-darwin, ... }:
-	{
+	outputs = inputs@{ nix-darwin, ...}: {
 		darwinConfigurations = {
 			air = nix-darwin.lib.darwinSystem { 
 				modules = [ ./nix/hosts/air ];
-				specialArgs = { inherit self inputs; };
+				specialArgs = { inherit inputs; };
 			};
 		};
 	};
