@@ -4,6 +4,9 @@ let
 variables = import ./variables.nix;
 
 aliases = {
+# Nix
+    ngc = "sudo nix-collect-garbage -d";
+
 # System Shutdown/Reboot
     sd = "sudo shutdown -h now";
     rb = "sudo shutdown -r now";
@@ -32,8 +35,9 @@ aliases = {
 functions = {
 # Nix
     rebuild = ''{
+        cmd=$([ "$(uname)" = "Darwin" ] && echo darwin-rebuild || echo nixos-rebuild)
         stow -d "$CONFIG_PATH/dotfiles" -t "$HOME" $(basename -a "$CONFIG_PATH/dotfiles/"*) ;\
-            sudo darwin-rebuild switch --flake $CONFIG_PATH/#$1
+            sudo $cmd switch --flake $CONFIG_PATH/#$1
     }'';
 
 # Yazi
@@ -131,6 +135,7 @@ binds = {
 env = {
     CONFIG_PATH = "~/config";
     HISTDUP = "erase";
+    EDITOR = "nvim";
 };
 
 envPath = {
@@ -226,15 +231,14 @@ with variables; {
 
     programs.zsh = {
         enable = true;
-        enableCompletion = true;
-        enableBashCompletion = true;
-        enableAutosuggestions = true;
-        enableSyntaxHighlighting = true;
-        enableFzfCompletion = true;
-        variables = {
-            EDITOR = "nvim";
-            DYLD_LIBRARY_PATH = "/usr/local/lib";
-        };
+        # enableCompletion = true;
+        # enableBashCompletion = true;
+        # enableAutosuggestions = true;
+        # enableSyntaxHighlighting = true;
+        # enableFzfCompletion = true;
+        # variables = {
+        #     DYLD_LIBRARY_PATH = "/usr/local/lib";
+        # };
         promptInit = ''
         ${sourcesString}
 

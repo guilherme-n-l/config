@@ -7,17 +7,22 @@
 		nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 		nix-homebrew.url = "github:zhaofengli/nix-homebrew";
         wezterm.url = "github:wezterm/wezterm?dir=nix";
-
 		homebrew-cask = {
 			url = "github:homebrew/homebrew-cask";
 			flake = false;
 		};
 	};
 
-	outputs = inputs@{ nix-darwin, ...}: {
+	outputs = inputs@{ nix-darwin, nixpkgs, ...}: {
 		darwinConfigurations = {
 			air = nix-darwin.lib.darwinSystem { 
 				modules = [ ./nix/hosts/air ];
+				specialArgs = { inherit inputs; };
+			};
+		};
+		nixosConfigurations = {
+			work = nixpkgs.lib.nixosSystem { 
+				modules = [ ./nix/hosts/work ];
 				specialArgs = { inherit inputs; };
 			};
 		};
