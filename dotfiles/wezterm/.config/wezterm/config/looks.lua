@@ -11,7 +11,7 @@ function module.apply(config)
 	-- Colors
 	config.color_scheme = "Kanagawa Dragon (Gogh)"
 
-	config.window_background_opacity = 0.8
+	config.window_background_opacity = 0.9
 	config.macos_window_background_blur = 20
 
 	-- Font

@@ -60,6 +60,14 @@ in {
     enableSSHSupport = true;
   };
 
+  programs.zsh = {
+    enable = true;
+    enableBashCompletion = true;
+    enableCompletion = true;
+    syntaxHighlighting.enable = true;
+    autosuggestions.enable = true;
+  };
+
   services.openssh.enable = true;
 
   networking.firewall.allowedTCPPorts = [22];

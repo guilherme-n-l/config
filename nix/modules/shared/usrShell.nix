@@ -248,14 +248,6 @@ in
 
     programs.zsh = {
       enable = true;
-      # enableCompletion = true;
-      # enableBashCompletion = true;
-      # enableAutosuggestions = true;
-      # enableSyntaxHighlighting = true;
-      # enableFzfCompletion = true;
-      # variables = {
-      #     DYLD_LIBRARY_PATH = "/usr/local/lib";
-      # };
       promptInit = ''
         ${sourcesString}
 
