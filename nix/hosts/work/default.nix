@@ -1,18 +1,18 @@
-{ inputs, config, lib, pkgs, ... }:
-
-let
-variables = import ./../../modules/shared/variables.nix;
-
-pkgs = import inputs.nixpkgs {
-	system = variables.x86Arch;
-	config.allowUnfree = true;
-};
-
-packages = import ./packages.nix { inherit pkgs inputs; };
-in
 {
-  imports =
-    [ ./hardware-configuration.nix ./../../modules/shared ];
+  inputs,
+  lib,
+  ...
+}: let
+  variables = import ./../../modules/shared/variables.nix;
+
+  pkgs = import inputs.nixpkgs {
+    system = variables.x86Arch;
+    config.allowUnfree = true;
+  };
+
+  packages = import ./packages.nix {inherit pkgs inputs;};
+in {
+  imports = [./hardware-configuration.nix ./../../modules/shared];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -48,7 +48,7 @@ in
   users.users = with variables; {
     ${user} = {
       isNormalUser = true;
-      extraGroups = [ "wheel" "docker" ];
+      extraGroups = ["wheel" "docker"];
     };
   };
 
@@ -62,8 +62,8 @@ in
 
   services.openssh.enable = true;
 
-  networking.firewall.allowedTCPPorts = [ 22 ];
-  networking.firewall.allowedUDPPorts = [ 22 ];
+  networking.firewall.allowedTCPPorts = [22];
+  networking.firewall.allowedUDPPorts = [22];
 
   fileSystems = {
     "/" = {
@@ -79,4 +79,3 @@ in
   virtualisation.docker.enable = true;
   system.stateVersion = "25.05";
 }
-

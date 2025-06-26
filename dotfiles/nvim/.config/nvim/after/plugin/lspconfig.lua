@@ -156,6 +156,7 @@ conform.setup({
 		javascript = { "biome", "prettier" },
 		typescript = { "biome", "prettier" },
 		go = { "gci", "goimports" },
+		nix = { "alejandra" },
 		-- yaml = { "yamlfmt" },
 	},
 })

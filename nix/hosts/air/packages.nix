@@ -1,6 +1,4 @@
-{ pkgs }:
-
-{
+{pkgs}: {
   casks = [
     "librewolf"
     "desktoppr"
