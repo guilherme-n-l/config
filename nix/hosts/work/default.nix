@@ -64,6 +64,7 @@ in {
     enableCompletion = true;
     syntaxHighlighting.enable = true;
     autosuggestions.enable = true;
+    enableLsColors = true;
   };
 
   services.openssh.enable = true;
