@@ -9,8 +9,6 @@
     system = variables.x86Arch;
     config.allowUnfree = true;
   };
-
-  packages = import ./packages.nix {inherit pkgs inputs;};
 in {
   imports = [./hardware-configuration.nix ./../../modules/shared];
 
@@ -52,7 +50,7 @@ in {
     };
   };
 
-  environment.systemPackages = packages.pkgs;
+  environment.systemPackages = (import ./packages.nix {inherit pkgs inputs;}).pkgs;
 
   programs.mtr.enable = true;
   programs.gnupg.agent = {
