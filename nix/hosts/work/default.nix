@@ -29,10 +29,16 @@ in {
     useXkbConfig = true;
   };
 
-  services.xserver.desktopManager.xfce.enable = true;
-  services.xserver.enable = true;
-
-  services.xserver.xkb.layout = "br";
+  services.xserver = {
+    desktopManager.xfce.enable = true;
+    enable = true;
+    xkb.extraLayouts.br-custom = {
+      symbolsFile = ../../../keyboard/symbols/br-custom;
+      languages = ["pt-br"];
+      description = "Custom keyboard configuration based on the abnt2 layout";
+    };
+    layout = "br-custom";
+  };
 
   services.printing.enable = false;
 
