@@ -1,10 +1,11 @@
 local wt = require("wezterm")
+local utils = require("utils")
 local act = wt.action
 local mux = wt.mux
 local module = {}
 
 function module.apply(config)
-	config.leader = { key = "t", mods = "ALT", timeout_milliseconds = 1000 }
+	config.leader = { key = "Space", mods = "ALT", timeout_milliseconds = 1000 }
 
 	config.keys = {
 		----  Mux
@@ -34,19 +35,31 @@ function module.apply(config)
 			action = act.CloseCurrentTab({ confirm = false }),
 		},
 		{
-			mods = "ALT",
+			mods = "LEADER",
 			key = "h",
 			action = act.ActivateTabRelative(-1),
 		},
 		{
-			mods = "ALT",
+			mods = "LEADER",
 			key = "l",
 			action = act.ActivateTabRelative(1),
 		},
 		{
+			mods = "LEADER",
+			key = "j",
+			action = act.MoveTabRelative(-1),
+		},
+		{
+			mods = "LEADER",
+			key = "k",
+			action = act.MoveTabRelative(1),
+		},
+		{
 			key = ",",
 			mods = "LEADER",
-			action = act.EmitEvent("tabs.manual-update-tab-title"),
+			action = utils.rename("Enter new name for tab", "", function(win, _, title)
+				win:active_tab():set_title(title)
+			end),
 		},
 		---- Workspaces
 		{
@@ -59,15 +72,9 @@ function module.apply(config)
 		{
 			key = "$",
 			mods = "LEADER",
-			action = act.PromptInputLine({
-				description = "Enter new name for workspace",
-				action = wt.action_callback(function(_, _, line)
-					if line then
-						local ws = mux.get_active_workspace()
-						mux.rename_workspace(ws, line)
-					end
-				end),
-			}),
+			action = utils.rename("Enter new name for workspace", mux.get_active_workspace(), function(_, _, title)
+				mux.rename_workspace(mux.get_active_workspace(), title)
+			end),
 		},
 	}
 

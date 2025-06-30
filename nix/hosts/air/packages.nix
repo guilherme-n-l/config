@@ -3,10 +3,11 @@
     "librewolf"
     "desktoppr"
     "keepassxc"
-    "ukelele"
+    "darktable"
+    "calibre"
     "wezterm@nightly"
   ];
-
-  pkgs = with pkgs; [
-  ];
+  pkgs = [];
+  # pkgs = with pkgs; [
+  # ];
 }
