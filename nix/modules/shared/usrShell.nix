@@ -1,35 +1,6 @@
 {pkgs, ...}: let
   variables = import ./variables.nix;
 
-  aliases = {
-    # Nix
-    ngc = "sudo nix-collect-garbage -d";
-
-    # System Shutdown/Reboot
-    sd = "sudo shutdown -h now";
-    rb = "sudo shutdown -r now";
-
-    # Fzf Directory Search
-    fzfd = "fd --hidden --type d | fzf";
-
-    # Lazygit
-    lg = "lazygit";
-
-    # Git
-    gs = "git status";
-    gc = "git commit";
-    gcl = "git clone";
-    gcfg = "git config";
-    gco = "git checkout";
-    gf = "git fetch origin";
-    gp = "git pull";
-    gP = "git push";
-    gl = "git log --graph --abbrev-commit --decorate";
-    gwa = "git worktree add";
-    gwr = "git worktree remove";
-    gwl = "git worktree list";
-  };
-
   functions = {
     # Nix
     rebuild = ''      {
@@ -41,17 +12,16 @@
     dev = ''      {
               if [ -z $1 ]; then
                   nix develop
-                  exit
-              fi
-
-              path="$CONFIG_PATH/nix/shells"
-              sh="$path/$1.nix"
-
-              if [ -f "$sh" ]; then
-                  nix-shell "$sh"
               else
-                  echo "Shell not found. Available shells:"
-                  ls "$path"/*.nix
+                  path="$CONFIG_PATH/nix/shells"
+                  sh="$path/$1.nix"
+
+                  if [ -f "$sh" ]; then
+                      nix-shell "$sh"
+                  else
+                      echo "Shell not found. Available shells:"
+                      ls "$path"/*.nix
+                  fi
               fi
           }'';
 
@@ -186,12 +156,6 @@
     kvp = env;
     quoteKeyIfSpecial = false;
   };
-  aliasesString = toShellStatements {
-    keyword = "alias ";
-    separator = "=";
-    quoteValue = true;
-    kvp = aliases;
-  };
   optsString = toShellStatements {
     keyword = "setopt ";
     separator = "";
@@ -248,6 +212,35 @@ in
 
     programs.zsh = {
       enable = true;
+      enableLsColors = true;
+      shellAliases = {
+        # Nix
+        ngc = "sudo nix-collect-garbage -d";
+
+        # System Shutdown/Reboot
+        sd = "sudo shutdown -h now";
+        rb = "sudo shutdown -r now";
+
+        # Fzf Directory Search
+        fzfd = "fd --hidden --type d | fzf";
+
+        # Lazygit
+        lg = "lazygit";
+
+        # Git
+        gs = "git status";
+        gc = "git commit";
+        gcl = "git clone";
+        gcfg = "git config";
+        gco = "git checkout";
+        gf = "git fetch origin";
+        gp = "git pull";
+        gP = "git push";
+        gl = "git log --graph --abbrev-commit --decorate";
+        gwa = "git worktree add";
+        gwr = "git worktree remove";
+        gwl = "git worktree list";
+      };
       promptInit = ''
         ${sourcesString}
 
@@ -256,8 +249,6 @@ in
         ${optsString}
 
         ${envString}
-
-        ${aliasesString}
 
         ${bindsString}
 
