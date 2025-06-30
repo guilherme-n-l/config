@@ -13,5 +13,6 @@
     ripgrep
     zoxide
     tealdeer
+    ripdrag
   ];
 }
