@@ -38,6 +38,12 @@ in {
       description = "Custom keyboard configuration based on the abnt2 layout";
     };
     layout = "br-custom";
+    libinput = {
+      enable = true;
+      touchpad = {
+        naturalScrolling = true;
+      };
+    };
   };
 
   services.printing.enable = false;
@@ -46,8 +52,6 @@ in {
     enable = true;
     pulse.enable = true;
   };
-
-  services.libinput.enable = true;
 
   users.users = with variables; {
     ${user} = {
