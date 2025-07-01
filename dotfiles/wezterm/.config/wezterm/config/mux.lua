@@ -5,7 +5,7 @@ function module.apply(config)
 		{ name = "unix" },
 	}
 
-	config.default_gui_startup_args = { "connect", "unix" }
+	-- config.default_gui_startup_args = { "connect", "unix" }
 end
 
 return module

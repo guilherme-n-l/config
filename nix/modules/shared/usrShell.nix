@@ -3,17 +3,20 @@
 
   functions = {
     # Nix
-    rebuild = ''      {
-              cmd=$([ "$(uname)" = "Darwin" ] && echo darwin-rebuild || echo nixos-rebuild)
-              stow -d "$CONFIG_PATH/dotfiles" -t "$HOME" $(basename -a "$CONFIG_PATH/dotfiles/"*) ;\
-                  sudo $cmd switch --flake $CONFIG_PATH/#$1
-          }'';
+    rebuild = ''
+      {
+          cmd=$([ "$(uname)" = "Darwin" ] && echo darwin-rebuild || echo nixos-rebuild)
+          stow -d "$CONFIG_PATH/dotfiles" -t "$HOME" $(basename -a "$CONFIG_PATH/dotfiles/"*) ;\
+          sudo $cmd switch --flake $CONFIG_PATH/#$1
+      }
+    '';
 
-    dev = ''      {
-              if [ -z $1 ]; then
-                  nix develop
-              else
-                  path="$CONFIG_PATH/nix/shells"
+    dev = ''
+      {
+          if [[ -z "$1" || "$1" == .* ]]; then
+              nix develop "$1"
+          else
+              path="$CONFIG_PATH/nix/shells"
                   sh="$path/$1.nix"
 
                   if [ -f "$sh" ]; then
@@ -22,53 +25,59 @@
                       echo "Shell not found. Available shells:"
                       ls "$path"/*.nix
                   fi
-              fi
-          }'';
+          fi
+      }
+    '';
 
     # Yazi
-    yz = ''      {
-              local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
-                  yazi "$@" --cwd-file="$tmp"
-                  if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$pwd" ]; then
-                      cd -- "$cwd"
-                          fi
-                          rm -f -- "$tmp"
-          }'';
+    yz = ''
+      {
+          local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+          yazi "$@" --cwd-file="$tmp"
+          if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$pwd" ]; then
+              cd -- "$cwd"
+          fi
+          rm -f -- "$tmp"
+      }
+    '';
 
     # Motions
-    fcd = ''      {
-              local ignored=(
-                      .cache
-                      .colima
-                      .docker
-                      .git
-                      Library
-                      )
+    fcd = ''
+      {
+          local ignored=( .cache .colima .docker .git Library )
+          local args=""
+          for d in $ignored; do
+              args+=" -E \"$d\""
+          done
+          eval "cd \$(fd --hidden $args --type d | fzf || pwd)"
+      }
+    '';
+    fcd_widget = ''
+      {
+          zle -I
+          fcd
+      }
 
-                  local args=""
-                  for d in $ignored; do
-                      args+=" -E \"$d\""
-                          done
-
-                          eval "cd \$(fd --hidden $args --type d | fzf || pwd)"
-          }'';
-    fcd_widget = ''      {
-              zle -I
-                  fcd
-          }
-          zle -N fcd_widget'';
+      zle -N fcd_widget
+    '';
 
     # Misc.
-    git_branch = ''      {
-              branch=$(git branch 2> /dev/null | grep \* | colrm 1 2)
-              [ ! -z $branch ] && echo "($branch) "
-          }'';
-    nh = ''      {
-              nohup $@ &> /dev/null &
-          }'';
-    zread = ''      {
-              nh zathura $@
-          }'';
+    git_branch = ''
+      {
+          branch=$(git branch 2> /dev/null | grep \* | colrm 1 2)
+          [ ! -z $branch ] && echo "($branch) "
+      }
+    '';
+    nh = ''
+      {
+          nohup $@ &> /dev/null &
+      }
+    '';
+    zread = ''
+      {
+          nh zathura $@
+      }
+    '';
   };
 
   sources = {

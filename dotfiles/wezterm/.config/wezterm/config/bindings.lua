@@ -1,5 +1,5 @@
 local wt = require("wezterm")
-local utils = require("utils")
+-- local utils = require("utils")
 local act = wt.action
 local mux = wt.mux
 local module = {}
@@ -54,13 +54,13 @@ function module.apply(config)
 			key = "k",
 			action = act.MoveTabRelative(1),
 		},
-		{
-			key = ",",
-			mods = "LEADER",
-			action = utils.rename("Enter new name for tab", "", function(win, _, title)
-				win:active_tab():set_title(title)
-			end),
-		},
+		-- {
+		-- 	key = ",",
+		-- 	mods = "LEADER",
+		-- 	action = utils.rename("Enter new name for tab", "", function(win, _, title)
+		-- 		win:active_tab():set_title(title)
+		-- 	end),
+		-- },
 		---- Workspaces
 		{
 			key = "s",
@@ -69,13 +69,13 @@ function module.apply(config)
 				flags = "FUZZY|WORKSPACES",
 			}),
 		},
-		{
-			key = "$",
-			mods = "LEADER",
-			action = utils.rename("Enter new name for workspace", mux.get_active_workspace(), function(_, _, title)
-				mux.rename_workspace(mux.get_active_workspace(), title)
-			end),
-		},
+		-- {
+		-- 	key = "$",
+		-- 	mods = "LEADER",
+		-- 	action = utils.rename("Enter new name for workspace", mux.get_active_workspace(), function(_, _, title)
+  --                   mux.rename_workspace(mux.get_active_workspace(), name)
+		-- 	end)
+		-- },
 	}
 
 	for i = 1, 9 do
