@@ -65,6 +65,7 @@ require("lazy").setup({
 			{ "<c-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
 		},
 	},
+    "bkad/CamelCaseMotion",
 	{
 		"nvim-telescope/telescope.nvim",
 		tag = "0.1.6",

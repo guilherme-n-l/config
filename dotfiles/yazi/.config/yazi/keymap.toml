@@ -18,3 +18,8 @@ on   = [ 'X' ]
 run  = 'remove --permanently'
 desc = 'Permanently delete the files'
 
+# DragDrop
+[[mgr.prepend_keymap]]
+on   = [ '<C-d>' ]
+run  = 'plugin drag'
+desc = 'Drag and drop utility'
