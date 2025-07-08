@@ -10,15 +10,22 @@ local conform = require("conform")
 local utils = require("guilh.utils")
 local g = vim.g
 local set = vim.keymap.set
+local del = vim.keymap.del
 
 g.mapleader = " "
+g.camelcasemotion_key = "<leader>"
 
 local mappings = {
 	------------------------------
 	--        Navegation        --
 	------------------------------
 
-	{ "n", "<leader>ww", vim.cmd.bd },
+	{ "n", "<leader>x", vim.cmd.bd },
+
+	-- CamelCase
+    { "n", "<leader>ww", "<Plug>CamelCaseMotion_w", { silent = true } },
+    { "n", "<leader>bb", "<Plug>CamelCaseMotion_b", { silent = true } },
+    { "n", "<leader>ee", "<Plug>CamelCaseMotion_e", { silent = true } },
 
 	-- Telescope
 	{
