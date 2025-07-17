@@ -2,6 +2,7 @@ local wt = require("wezterm")
 local font = wt.font
 
 local module = {}
+local osname = io.popen("uname -s"):read("*l")
 
 function module.apply(config)
     -- Window / Rending
@@ -16,7 +17,7 @@ function module.apply(config)
 
 	-- Font
 	config.font = font("FiraCode Nerd Font Mono")
-	config.font_size = 19.
+	config.font_size = (osname == "Linux") and 16. or 19.
 
 	-- Window / Tab bar
 	config.window_padding = {
