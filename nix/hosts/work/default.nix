@@ -12,13 +12,19 @@
 in {
   imports = [./hardware-configuration.nix ./../../modules/shared];
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot = {
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_latest;
+  };
 
-  networking.hostName = "nixos";
-  networking.networkmanager.enable = true;
+  networking = {
+    hostName = "nixos";
+    networkmanager.enable = true;
+  };
 
   time.timeZone = "America/Sao_Paulo";
 
@@ -29,28 +35,34 @@ in {
     useXkbConfig = true;
   };
 
-  services.xserver = {
-    desktopManager.xfce.enable = true;
-    enable = true;
-    xkb.extraLayouts.br-custom = {
-      symbolsFile = ../../../keyboard/symbols/br-custom;
-      languages = ["pt-br"];
-      description = "Custom keyboard configuration based on the abnt2 layout";
-    };
-    layout = "br-custom";
-    libinput = {
+  services = {
+    xserver = {
+      desktopManager.xfce.enable = true;
       enable = true;
-      touchpad = {
-        naturalScrolling = true;
+      xkb = {
+        extraLayouts.br-custom = {
+          symbolsFile = ../../../keyboard/symbols/br-custom;
+          languages = ["pt-br"];
+          description = "Custom keyboard configuration based on the abnt2 layout";
+        };
+
+        layout = "br-custom";
       };
     };
-  };
 
-  services.printing.enable = false;
+    libinput = {
+      enable = true;
+      touchpad.naturalScrolling = true;
+    };
 
-  services.pipewire = {
-    enable = true;
-    pulse.enable = true;
+    printing.enable = false;
+
+    pipewire = {
+      enable = true;
+      pulse.enable = true;
+    };
+
+    openssh.enable = true;
   };
 
   users.users = with variables; {
@@ -62,31 +74,33 @@ in {
 
   environment.systemPackages = (import ./packages.nix {inherit pkgs inputs;}).pkgs;
 
-  programs.mtr.enable = true;
-  programs.gnupg.agent = {
-    enable = true;
-    enableSSHSupport = true;
+  programs = {
+    mtr.enable = true;
+    gnupg.agent = {
+      enable = true;
+      enableSSHSupport = true;
+    };
+    zsh = {
+      enable = true;
+      enableBashCompletion = true;
+      enableCompletion = true;
+      syntaxHighlighting.enable = true;
+      autosuggestions.enable = true;
+      enableLsColors = true;
+    };
   };
 
-  programs.zsh = {
-    enable = true;
-    enableBashCompletion = true;
-    enableCompletion = true;
-    syntaxHighlighting.enable = true;
-    autosuggestions.enable = true;
-    enableLsColors = true;
+  networking.firewall = {
+    allowedTCPPorts = [22];
+    allowedUDPPorts = [22];
   };
-
-  services.openssh.enable = true;
-
-  networking.firewall.allowedTCPPorts = [22];
-  networking.firewall.allowedUDPPorts = [22];
 
   fileSystems = {
     "/" = {
       device = "/dev/nvme0n1p3";
       fsType = "ext4";
     };
+
     "/boot" = {
       device = "/dev/nvme0n1p1";
       fsType = "vfat";
