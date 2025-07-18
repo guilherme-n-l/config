@@ -1,5 +1,6 @@
 {pkgs}: {
   pkgs = with pkgs; [
+    ffmpeg
     neovim
     git
     lazygit

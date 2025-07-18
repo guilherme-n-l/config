@@ -1,6 +1,35 @@
 {pkgs, ...}: let
   variables = import ./variables.nix;
 
+  aliases = {
+    # Nix
+    ngc = "sudo nix-collect-garbage -d";
+
+    # System Shutdown/Reboot
+    sd = "sudo shutdown -h now";
+    rb = "sudo shutdown -r now";
+
+    # Fzf Directory Search
+    fzfd = "fd --hidden --type d | fzf";
+
+    # Lazygit
+    lg = "lazygit";
+
+    # Git
+    gs = "git status";
+    gc = "git commit";
+    gcl = "git clone";
+    gcfg = "git config";
+    gco = "git checkout";
+    gf = "git fetch origin";
+    gp = "git pull";
+    gP = "git push";
+    gl = "git log --graph --abbrev-commit --decorate";
+    gwa = "git worktree add";
+    gwr = "git worktree remove";
+    gwl = "git worktree list";
+  };
+
   functions = {
     # Nix
     rebuild = ''
@@ -13,18 +42,18 @@
 
     dev = ''
       {
-          if [[ -z "$1" || "$1" == .* ]]; then
-              nix develop "$1"
-          else
-              path="$CONFIG_PATH/nix/shells"
-                  sh="$path/$1.nix"
+          path="$CONFIG_PATH/nix/shells"
+          sh="$path/$1.nix"
 
-                  if [ -f "$sh" ]; then
-                      nix-shell "$sh"
-                  else
-                      echo "Shell not found. Available shells:"
-                      ls "$path"/*.nix
-                  fi
+          if [ -f "$sh" ]; then
+              nix-shell "$sh"
+          else
+              if [[ -z "$1" || "$1" == .* ]]; then
+                  nix develop "$1"
+              else
+                  echo "Shell not found. Available shells:"
+                  ls "$path"/*.nix
+              fi
           fi
       }
     '';
@@ -125,6 +154,7 @@
     "$HOME/.go" = "bin";
     "$HOME/.bun" = "bin";
     "$HOME/.local" = "bin";
+    "${pkgs.nodejs_24}" = "bin";
   };
 
   plugins = {
@@ -164,6 +194,12 @@
     quoteValue = false;
     kvp = env;
     quoteKeyIfSpecial = false;
+  };
+  aliasesString = toShellStatements {
+    keyword = "alias ";
+    separator = "=";
+    quoteValue = true;
+    kvp = aliases;
   };
   optsString = toShellStatements {
     keyword = "setopt ";
@@ -221,35 +257,6 @@ in
 
     programs.zsh = {
       enable = true;
-      enableLsColors = true;
-      shellAliases = {
-        # Nix
-        ngc = "sudo nix-collect-garbage -d";
-
-        # System Shutdown/Reboot
-        sd = "sudo shutdown -h now";
-        rb = "sudo shutdown -r now";
-
-        # Fzf Directory Search
-        fzfd = "fd --hidden --type d | fzf";
-
-        # Lazygit
-        lg = "lazygit";
-
-        # Git
-        gs = "git status";
-        gc = "git commit";
-        gcl = "git clone";
-        gcfg = "git config";
-        gco = "git checkout";
-        gf = "git fetch origin";
-        gp = "git pull";
-        gP = "git push";
-        gl = "git log --graph --abbrev-commit --decorate";
-        gwa = "git worktree add";
-        gwr = "git worktree remove";
-        gwl = "git worktree list";
-      };
       promptInit = ''
         ${sourcesString}
 
@@ -258,6 +265,8 @@ in
         ${optsString}
 
         ${envString}
+
+        ${aliasesString}
 
         ${bindsString}
 
