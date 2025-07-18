@@ -42,11 +42,11 @@ in {
       mutableTaps = false;
     };
 
-    homebrew = {
+    homebrew = with packages; {
       enable = true;
-      casks = packages.casks;
+      inherit brews casks;
       caskArgs.no_quarantine = true;
-      # onActivation.cleanup = "zap";
+      onActivation.cleanup = "zap";
     };
 
     programs.zsh = {
