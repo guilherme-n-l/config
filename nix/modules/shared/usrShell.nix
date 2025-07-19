@@ -42,18 +42,14 @@
 
     dev = ''
       {
-          path="$CONFIG_PATH/nix/shells"
-          sh="$path/$1.nix"
-
-          if [ -f "$sh" ]; then
-              nix-shell "$sh"
+          shellFilePath="$CONFIG_PATH/nix/shells/$1.nix"
+          if [ -f "$shellFilePath" ]; then
+              nix-shell $shellFilePath
           else
-              if [[ -z "$1" || "$1" == .* ]]; then
-                  nix develop "$1"
-              else
-                  echo "Shell not found. Available shells:"
-                  ls "$path"/*.nix
-              fi
+          nix develop $1 || {
+                  availableShells=$(find $CONFIG_PATH/nix/shells -type f -name "*.nix" -exec basename {} .nix \;)
+                  echo -e "Available shells:\n$(printf "\t%s\n" $availableShells)"
+              }
           fi
       }
     '';
@@ -154,7 +150,7 @@
     "$HOME/.go" = "bin";
     "$HOME/.bun" = "bin";
     "$HOME/.local" = "bin";
-    "${pkgs.nodejs_24}" = "bin";
+    # "${pkgs.nodejs_24}" = "bin";
   };
 
   plugins = {
