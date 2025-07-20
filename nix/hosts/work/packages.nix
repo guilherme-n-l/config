@@ -13,6 +13,7 @@
       (alias librewolf "librewolf" "lw")
       dmenu
       gcc
+      (alias wezterm "wezterm" "wt")
       wezterm
       xclip
       keepassxc
