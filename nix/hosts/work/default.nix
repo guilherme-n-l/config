@@ -12,6 +12,11 @@
 in {
   imports = [./hardware-configuration.nix ./../../modules/shared];
 
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
+
   boot = {
     loader = {
       systemd-boot.enable = true;
@@ -37,8 +42,10 @@ in {
 
   services = {
     xserver = {
-      desktopManager.xfce.enable = true;
       enable = true;
+      desktopManager.xfce.enable = true;
+      autoRepeatDelay = 200;
+      autoRepeatInterval = 35;
       xkb = {
         extraLayouts.br-custom = {
           symbolsFile = ../../../keyboard/symbols/br-custom;
@@ -63,6 +70,7 @@ in {
     };
 
     openssh.enable = true;
+    blueman.enable = true;
   };
 
   users.users = with variables; {
