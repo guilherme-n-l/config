@@ -17,8 +17,6 @@
       wezterm
       xclip
       keepassxc
-      bluez
-      blueman
       ripdrag
     ]
     ++ (with inputs; [
