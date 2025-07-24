@@ -14,5 +14,13 @@
     ripgrep
     zoxide
     tealdeer
+
+    # LUA LSP
+    luajitPackages.lua-lsp
+    stylua
+
+    # NIX LSP
+    nil
+    alejandra
   ];
 }
