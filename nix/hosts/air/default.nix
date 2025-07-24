@@ -10,7 +10,7 @@
     config.allowUnfree = true;
   };
 
-  packages = import ./packages.nix {inherit pkgs;};
+  packages = import ./packages.nix {inherit inputs pkgs;};
 in {
   imports = [
     inputs.nix-homebrew.darwinModules.nix-homebrew
@@ -38,7 +38,7 @@ in {
       user = user;
       enable = true;
       enableRosetta = true;
-      taps = {"homebrew/homebrew-cask" = inputs.homebrew-cask;};
+      taps = packages.taps;
       mutableTaps = false;
     };
 
@@ -47,6 +47,7 @@ in {
       inherit brews casks;
       caskArgs.no_quarantine = true;
       onActivation.cleanup = "zap";
+      taps = builtins.attrNames taps;
     };
 
     programs.zsh = {

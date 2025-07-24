@@ -1,4 +1,4 @@
-{pkgs}: {
+{inputs, pkgs}: {
   casks = [
     "librewolf"
     "libreoffice"
@@ -16,6 +16,7 @@
 
   pkgs = [];
 
+  taps = {"homebrew/homebrew-cask" = inputs.homebrew-cask;};
   # pkgs = with pkgs; [
   # ];
 }
