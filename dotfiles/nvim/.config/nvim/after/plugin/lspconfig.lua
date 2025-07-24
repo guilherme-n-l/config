@@ -123,40 +123,49 @@ local lsps = {
 		name = "lua_ls",
 		exec = "lua-lsp",
 
-		fmt_name = "stylua",
+		fmts = { "stylua" },
+		fmts_args = { { prepend_args = { "--syntax", "Lua52" } } },
 	},
 	nix = {
 		name = "nil_ls",
 		exec = "nil",
 
-		fmt_name = "alejandra",
+		fmts = { "alejandra" },
 	},
 	rust = {
-        health = "rustc --version",
+		health = "rustc --version",
 		name = "rust_analyzer",
 		exec = "rust-analyzer",
 
-		fmt_name = "rustfmt",
+		fmts = { "rustfmt" },
 	},
 	python = {
-        health = "python3 --version",
+		health = "python3 --version",
 		name = "pylsp",
 
-		fmt_name = "black",
+		fmts = { "black" },
 	},
 }
 
 local conform_config = { formatters_by_ft = {} }
 for k, lsp in pairs(lsps) do
-    if lsp.health and os.execute(lsp.health) ~= 0 then 
-        goto continue
-    end
+	if lsp.health and os.execute(lsp.health) ~= 0 then
+		goto continue
+	end
 
 	lspconfig[lsp.name].setup({ cmd = { lsp.exec or lsp.name } })
 
-	conform.formatters[lsp.fmt_name] = { command = lsp.fmt_exec or lsp.fmt_name }
-	conform_config.formatters_by_ft[k] = { lsp.fmt_name }
-    ::continue::
+	for i, fmt in ipairs(lsp.fmts) do
+		if lsp.fmts_args and lsp.fmts_args[i] then
+			conform.formatters[fmt] = lsp.fmts_args[i]
+		else
+			conform.formatters[fmt] = {}
+		end
+		conform.formatters[fmt].command = conform.formatters[fmt].command or fmt
+	end
+
+	conform_config.formatters_by_ft[k] = lsp.fmts
+	::continue::
 end
 
 conform.setup(conform_config)
