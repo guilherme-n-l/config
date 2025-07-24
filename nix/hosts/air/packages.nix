@@ -8,6 +8,7 @@
     "calibre"
     "wezterm@nightly"
     "gimp"
+    "mpv"
   ];
 
   brews = [
