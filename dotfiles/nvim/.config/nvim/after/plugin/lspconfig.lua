@@ -1,10 +1,10 @@
 local vim = vim
 local lsp_zero = require("lsp-zero")
+local lspconfig = require("lspconfig")
 
 local cmp = require("cmp")
 local cmp_action = require("lsp-zero").cmp_action()
 local conform = require("conform")
-local mason_conform = require("mason-conform")
 local cmp_icons = {
 	Variable = "",
 	Keyword = "",
@@ -74,16 +74,6 @@ lsp_zero.preset("recommended")
 
 local signs = { Error = " ", Warn = " ", Hint = " ", Info = "󰙎 " }
 
-lsp_zero.configure("lua_ls", {
-	settings = {
-		Lua = {
-			diagnostics = {
-				globals = { "vim" },
-			},
-		},
-	},
-})
-
 lsp_zero.set_preferences({
 	suggest_lsp_servers = false,
 	sign_icons = {
@@ -125,44 +115,50 @@ end)
 lsp_zero.setup()
 
 ------------------------------
---          Mason           --
+--        LSP CONFIG        --
 ------------------------------
 
-require("mason").setup({})
-require("mason-lspconfig").setup({
-	ensure_installed = {
-		"lua_ls",
-		"marksman",
-		-- "gopls",
+local lsps = {
+	lua = {
+		name = "lua_ls",
+		exec = "lua-lsp",
+
+		fmt_name = "stylua",
 	},
-	handlers = {
-		function(server_name)
-			require("lspconfig")[server_name].setup({})
-		end,
+	nix = {
+		name = "nil_ls",
+		exec = "nil",
+
+		fmt_name = "alejandra",
 	},
-})
+	rust = {
+        health = "rustc --version",
+		name = "rust_analyzer",
+		exec = "rust-analyzer",
 
-------------------------------
---         Conform          --
-------------------------------
-
-conform.setup({
-	formatters_by_ft = {
-		lua = { "stylua" },
-		python = { "black" },
-		-- markdown = { "markdownlint" },
-		-- cpp = { "clang-format" },
-		-- java = { "clang-format" },
-		-- javascript = { "biome", "prettier" },
-		-- typescript = { "biome", "prettier" },
-		-- go = { "gci", "goimports" },
-		nix = { "alejandra" },
-		-- yaml = { "yamlfmt" },
+		fmt_name = "rustfmt",
 	},
-})
+	python = {
+        health = "python3 --version",
+		name = "pylsp",
 
-mason_conform.setup()
+		fmt_name = "black",
+	},
+}
 
-vim.diagnostic.config({
-	virtual_text = false,
-})
+local conform_config = { formatters_by_ft = {} }
+for k, lsp in pairs(lsps) do
+    if lsp.health and os.execute(lsp.health) ~= 0 then 
+        goto continue
+    end
+
+	lspconfig[lsp.name].setup({ cmd = { lsp.exec or lsp.name } })
+
+	conform.formatters[lsp.fmt_name] = { command = lsp.fmt_exec or lsp.fmt_name }
+	conform_config.formatters_by_ft[k] = { lsp.fmt_name }
+    ::continue::
+end
+
+conform.setup(conform_config)
+
+vim.diagnostic.config({ virtual_text = false })
