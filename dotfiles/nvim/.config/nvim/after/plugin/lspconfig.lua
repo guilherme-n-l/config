@@ -162,6 +162,12 @@ local lsps = {
 
 		fmts = { "clang-format" },
 	},
+	c = {
+		health = "gcc --version || clang --version",
+		name = "clangd",
+
+		fmts = { "clang-format" },
+	},
 }
 
 local conform_config = { formatters_by_ft = {} }
@@ -179,6 +185,10 @@ for k, lsp in pairs(lsps) do
 	end
 
 	lspconfig[lsp.name].setup(config)
+
+	if not lsp.fmts then
+		goto continue
+	end
 
 	if not lsp.fmts then
 		goto continue
