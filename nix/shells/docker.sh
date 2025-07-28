@@ -19,7 +19,8 @@ help() {
     declare -A functions=(
         ["colima.stop"]="Stops colima runtime."
         ["colima.start"]="Starts colima runtime."
-        ["docker.runtmp"]="Run a container with --rm and -it flags -> docker.runtmp [IMG] [SH]"
+        ["docker.runtmp"]="Run a temporary container with --rm and -it flags -> docker.runtmp [IMG] [SH]"
+        ["docker.dev"]="Run a temporary Linux alpine VM"
     )
 
     echo "$ENVIRON environment available commands:"
@@ -39,4 +40,8 @@ colima.start() {
 
 docker.runtmp() { 
     docker run --rm -it $@
+}
+
+docker.dev() {
+    docker.runtmp ghcr.io/guilherme-n-l/base-dev:latest
 }
