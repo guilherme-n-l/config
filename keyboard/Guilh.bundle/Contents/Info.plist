@@ -3,11 +3,22 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleIdentifier</key>
-	<string>org.sil.ukelele.keyboardlayout.</string>
+	<string>org.sil.ukelele.keyboardlayout.guilh</string>
 	<key>CFBundleName</key>
-	<string></string>
+	<string>Guilh</string>
 	<key>CFBundleVersion</key>
 	<string></string>
+	<key>KLInfo_BR - Guilh</key>
+	<dict>
+		<key>TICapsLockLanguageSwitchCapable</key>
+		<false/>
+		<key>TISIconIsTemplate</key>
+		<false/>
+		<key>TISInputSourceID</key>
+		<string>org.sil.ukelele.keyboardlayout.guilh.br-guilh</string>
+		<key>TISIntendedLanguage</key>
+		<string>pt-BR</string>
+	</dict>
 	<key>KLInfo_US - Guilh</key>
 	<dict>
 		<key>TICapsLockLanguageSwitchCapable</key>
@@ -15,7 +26,7 @@
 		<key>TISIconIsTemplate</key>
 		<false/>
 		<key>TISInputSourceID</key>
-		<string>org.sil.ukelele.keyboardlayout..us-guilh</string>
+		<string>org.sil.ukelele.keyboardlayout.guilh.us-guilh</string>
 		<key>TISIntendedLanguage</key>
 		<string>en</string>
 	</dict>
