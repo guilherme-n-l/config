@@ -13,6 +13,7 @@
 
   brews = [
     "tailscale"
+    "clang-format"
   ];
 
   pkgs = [];

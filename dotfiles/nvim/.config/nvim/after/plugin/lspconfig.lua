@@ -145,6 +145,12 @@ local lsps = {
 
 		fmts = { "black" },
 	},
+	c = {
+		health = "gcc --version || clang --version",
+		name = "clangd",
+
+		fmts = { "clang-format" },
+	},
 }
 
 local conform_config = { formatters_by_ft = {} }
@@ -154,6 +160,10 @@ for k, lsp in pairs(lsps) do
 	end
 
 	lspconfig[lsp.name].setup({ cmd = { lsp.exec or lsp.name } })
+
+	if not lsp.fmts then
+		goto continue
+	end
 
 	for i, fmt in ipairs(lsp.fmts) do
 		if lsp.fmts_args and lsp.fmts_args[i] then
