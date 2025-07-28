@@ -47,8 +47,8 @@
               nix-shell $shellFilePath
           else
           nix develop $1 || {
-                  availableShells=$(find $CONFIG_PATH/nix/shells -type f -name "*.nix" -exec basename {} .nix \;)
-                  echo -e "Available shells:\n$(printf "\t%s\n" $availableShells)"
+                  availableShells=$(find $CONFIG_PATH/nix/shells -type f -name "*.nix" -exec basename {} .nix \; | awk '{print "\t" $0}')
+                  echo -e "Available shells:\n$availableShells"
               }
           fi
       }
