@@ -1,0 +1,23 @@
+@-moz-document unobservable-document() {
+  :root {
+    --bg-color: rgb(27, 27, 34);
+    --toolbar-bg-color: var(--bg-color) !important;
+    --toolbar-border-color: var(--toolbar-bg-color) !important;
+    --toolbar-icon-bg-color: gray !important;
+    --toolbar-icon-hover-bg-color: #d2d2d2 !important;
+    --toggled-btn-color: white !important;
+    --doorhanger-bg-color: var(--bg-color) !important;
+  }
+
+  .toolbar *:not(.editorParamsToolbar *),
+  body:has(.pdfViewer *),
+  #sidebarContainer * {
+      background-color: var(--bg-color) !important;
+  }
+
+  .toolbar *,
+  body:has(.pdfViewer *),
+  #sidebarContainer * {
+    color: white !important;
+  }
+}
