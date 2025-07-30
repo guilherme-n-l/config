@@ -30,22 +30,12 @@ require("lazy").setup({
 	},
 	"neovim/nvim-lspconfig",
 	{
-		"williamboman/mason.nvim",
-		dependencies = {
-			"williamboman/mason-lspconfig.nvim",
-			"neovim/nvim-lspconfig",
-		},
-	},
-	{
 		"folke/trouble.nvim",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 	},
 	"mateusbraga/vim-spell-pt-br",
-	"hrsh7th/nvim-cmp",
 	"stevearc/conform.nvim",
-	"zapling/mason-conform.nvim",
-	"rshkarin/mason-nvim-lint",
-	"mfussenegger/nvim-lint",
+    "hrsh7th/nvim-cmp",
 	"hrsh7th/cmp-nvim-lsp",
 	--------- Navegation ---------
 	{
@@ -65,7 +55,7 @@ require("lazy").setup({
 			{ "<c-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
 		},
 	},
-    "bkad/CamelCaseMotion",
+	"bkad/CamelCaseMotion",
 	{
 		"nvim-telescope/telescope.nvim",
 		tag = "0.1.6",
