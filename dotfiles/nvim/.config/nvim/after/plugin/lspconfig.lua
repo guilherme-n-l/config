@@ -1,9 +1,9 @@
 local vim = vim
 local lsp_zero = require("lsp-zero")
 local lspconfig = require("lspconfig")
-
 local cmp = require("cmp")
-local cmp_action = require("lsp-zero").cmp_action()
+local cmp_nvim = require("cmp_nvim_lsp")
+local cmp_action = lsp_zero.cmp_action()
 local conform = require("conform")
 local cmp_icons = {
 	Variable = "",
@@ -154,12 +154,13 @@ local lsps = {
 }
 
 local conform_config = { formatters_by_ft = {} }
+local cmp_nvim_capabilities = cmp_nvim.default_capabilities()
 for k, lsp in pairs(lsps) do
 	if lsp.health and os.execute(lsp.health) ~= 0 then
 		goto continue
 	end
 
-	lspconfig[lsp.name].setup({ cmd = { lsp.exec or lsp.name } })
+	lspconfig[lsp.name].setup({ cmd = { lsp.exec or lsp.name }, capabilities = cmp_nvim_capabilities })
 
 	if not lsp.fmts then
 		goto continue
