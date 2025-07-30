@@ -18,6 +18,7 @@
       xclip
       keepassxc
       ripdrag
+      unzip
     ]
     ++ (with inputs; [
       wezterm
