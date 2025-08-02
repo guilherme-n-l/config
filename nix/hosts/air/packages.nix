@@ -2,13 +2,14 @@
   casks = [
     "librewolf"
     "libreoffice"
+    "mpv"
     "desktoppr"
     "keepassxc"
     "darktable"
     "calibre"
     "wezterm@nightly"
     "gimp"
-    "mpv"
+    "spotify"
   ];
 
   brews = [
