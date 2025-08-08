@@ -151,6 +151,12 @@ local lsps = {
 
 		fmts = { "clang-format" },
 	},
+	typst = {
+		health = "tinymist --version",
+		name = "tinymist",
+
+		fmts = { "typstfmt" },
+	},
 }
 
 local conform_config = { formatters_by_ft = {} }
