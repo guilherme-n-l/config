@@ -121,29 +121,46 @@ lsp_zero.setup()
 local lsps = {
 	lua = {
 		name = "lua_ls",
-		exec = "lua-lsp",
+		cmd = { "lua-lsp" },
 
 		fmts = { "stylua" },
 		fmts_args = { { prepend_args = { "--syntax", "Lua52" } } },
 	},
 	nix = {
 		name = "nil_ls",
-		exec = "nil",
+		cmd = { "nil" },
 
 		fmts = { "alejandra" },
 	},
 	rust = {
-		health = "rustc --version",
+		health = "rust-analyzer --version",
 		name = "rust_analyzer",
-		exec = "rust-analyzer",
+		cmd = { "rust-analyzer" },
 
 		fmts = { "rustfmt" },
 	},
 	python = {
-		health = "python3 --version",
+		health = "pylsp --version",
 		name = "pylsp",
+		lsp_args = {
+			settings = {
+				pylsp = {
+					plugins = {
+						pylint = { enabled = true, executable = "pylint" },
+						black = { enabled = true },
+						pyls_isort = { enabled = true },
+						pylsp_mypy = { enabled = true },
+					},
+				},
+			},
+		},
+		fmts = { "black", "isort" },
+	},
+	c = {
+		health = "clangd --version",
+		name = "clangd",
 
-		fmts = { "black" },
+		fmts = { "clang-format" },
 	},
 	c = {
 		health = "gcc --version || clang --version",
@@ -160,18 +177,31 @@ for k, lsp in pairs(lsps) do
 		goto continue
 	end
 
-	lspconfig[lsp.name].setup({ cmd = { lsp.exec or lsp.name }, capabilities = cmp_nvim_capabilities })
+	local config = { cmd = lsp.exec or { lsp.name }, capabilities = cmp_nvim_capabilities }
+
+	if lsp.lsp_args then
+		for k, v in pairs(lsp.lsp_args) do
+			config[k] = v
+		end
+	end
+
+	lspconfig[lsp.name].setup(config)
+
+	if not lsp.fmts then
+		goto continue
+	end
 
 	if not lsp.fmts then
 		goto continue
 	end
 
 	for i, fmt in ipairs(lsp.fmts) do
+		conform.formatters[fmt] = {}
+
 		if lsp.fmts_args and lsp.fmts_args[i] then
 			conform.formatters[fmt] = lsp.fmts_args[i]
-		else
-			conform.formatters[fmt] = {}
 		end
+
 		conform.formatters[fmt].command = conform.formatters[fmt].command or fmt
 	end
 
