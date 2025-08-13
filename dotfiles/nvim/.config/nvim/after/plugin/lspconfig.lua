@@ -157,16 +157,16 @@ local lsps = {
 		fmts = { "black", "isort" },
 	},
 	c = {
-		health = "clangd --version",
-		name = "clangd",
-
-		fmts = { "clang-format" },
-	},
-	c = {
 		health = "gcc --version || clang --version",
 		name = "clangd",
 
 		fmts = { "clang-format" },
+	},
+	typst = {
+		health = "tinymist --version",
+		name = "tinymist",
+
+		fmts = { "typstfmt" },
 	},
 }
 
@@ -177,7 +177,7 @@ for k, lsp in pairs(lsps) do
 		goto continue
 	end
 
-	local config = { cmd = lsp.exec or { lsp.name }, capabilities = cmp_nvim_capabilities }
+	local config = { cmd = lsp.cmd or { lsp.name }, capabilities = cmp_nvim_capabilities }
 
 	if lsp.lsp_args then
 		for k, v in pairs(lsp.lsp_args) do
