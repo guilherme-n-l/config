@@ -1,142 +1,22 @@
-local vim = vim
-require("telescope").load_extension("git_worktree")
-
-local builtin = require("telescope.builtin")
 local trouble = require("trouble")
 local harpoonui = require("harpoon.ui")
 local harpoon = require("harpoon.mark")
-local teleworktree = require("telescope").extensions.git_worktree
+
 local conform = require("conform")
 local utils = require("guilh.utils")
-local g = vim.g
-local set = vim.keymap.set
-local del = vim.keymap.del
 
-g.mapleader = " "
-g.camelcasemotion_key = "<leader>"
-
-local mappings = {
-	------------------------------
-	--        Navegation        --
-	------------------------------
-
-	{ "n", "<leader>x", vim.cmd.bd },
-
-	-- CamelCase
-    { "n", "<leader>ww", "<Plug>CamelCaseMotion_w", { silent = true } },
-    { "n", "<leader>bb", "<Plug>CamelCaseMotion_b", { silent = true } },
-    { "n", "<leader>ee", "<Plug>CamelCaseMotion_e", { silent = true } },
-
-	-- Telescope
-	{
-		"n",
-		"<leader>pf",
-		function()
-			builtin.find_files({ hidden = true, no_ignore = true })
-		end,
-	},
-	{ "n", "<leader>pg", builtin.live_grep, {} },
-	{ "n", "<leader>pv", vim.cmd.Ex },
-
-	-- Harpoon
-	{ "n", "<leader>hm", harpoon.add_file },
-	{ "n", "<leader>hn", harpoonui.nav_next },
-	{ "n", "<leader>hp", harpoonui.nav_prev },
-	{ "n", "<leader>hv", harpoonui.toggle_quick_menu },
-
-	-- Move selected up and down
-	{ "v", "J", ":m '>+1<CR>gv=gv" },
-	{ "v", "K", ":m '<-2<CR>gv=gv" },
-
-	-- Join to line above
-	{ "n", "J", "mzJ`z" },
-
-	{ "n", "<C-d>", "<C-d>zz" },
-	{ "n", "<C-u>", "<C-u>zz" },
-
-	-- Search next blazzingly fast
-	{ "n", "n", "nzzzv" },
-	{ "n", "N", "Nzzzv" },
-
-	------------------------------
-	--           LSP            --
-	------------------------------
-
-	-- Trouble
-	{
-		"n",
-		"<leader>xx",
-		function()
-			utils.toggle_virtual_text()
-		end,
-	},
-	{
-		"n",
-		"<leader>xf",
-		function()
-			vim.diagnostic.open_float()
-		end,
-	},
-	{
-		"n",
-		"<leader>xv",
-		function()
-			trouble.toggle("diagnostics")
-		end,
-	},
-	{
-		"n",
-		"gr",
-		function()
-			trouble.toggle("lsp_references")
-		end,
-	},
-	-- Aerial
-	{ "n", "<leader>gv", vim.cmd.AerialToggle },
-	-- Conform
-	{
-		"n",
-		"<leader>gf",
-		function()
-			conform.format()
-		end,
-	},
-	{ "n", "<leader>xp", vim.diagnostic.goto_prev },
-	{ "n", "<leader>xn", vim.diagnostic.goto_next },
-	-- UndoTree
-	{ "n", "<leader>xu", vim.cmd.UndotreeToggle },
-
-	------------------------------
-	--          Git             --
-	------------------------------
-
-	-- Git_worktree
-	{
-		"n",
-		"<leader>wv",
-		function()
-			teleworktree.git_worktrees()
-		end,
-	},
-	{
-		"n",
-		"<leader>wa",
-		function()
-			teleworktree.create_git_worktree()
-		end,
-	},
-
-	------------------------------
-	--          Misc.           --
-	------------------------------
-
-	-- Custom modes
-	{ "n", "<leader>vtm", ":TextMode<CR>", {silent = false} },
+local globals = {
+	mapleader = " ",
+	camelcasemotion_key = "<leader>",
 }
 
+for k, v in pairs(globals) do
+	vim.g[k] = v
+end
+
+local harpoon_nav_binds = {}
 for i = 1, 9 do
-	table.insert(mappings, {
-		"n",
+	table.insert(harpoon_nav_binds, {
 		"<leader>" .. i,
 		function()
 			harpoonui.nav_file(i)
@@ -144,15 +24,80 @@ for i = 1, 9 do
 	})
 end
 
-for _, val in pairs(mappings) do
-	local mode = val[1]
-	local keybind = val[2]
-	local func = val[3]
-	local opts = val[4] or nil
+local mappings = {
+	n = {
+		{ "<leader>x", vim.cmd.bd, {} },
 
-	if opts then
-		set(mode, keybind, func, opts)
-	else
-		set(mode, keybind, func)
+		{ "<leader>ww", "<Plug>CamelCaseMotion_w", { silent = true } },
+		{ "<leader>bb", "<Plug>CamelCaseMotion_b", { silent = true } },
+		{ "<leader>ee", "<Plug>CamelCaseMotion_e", { silent = true } },
+
+		{ "<leader>pf", ":Pick files<CR>", { silent = true } },
+		{ "<leader>pg", ":Pick grep_live<CR>", { silent = true } },
+		{ "<leader>ph", ":Pick help<CR>", { silent = true } },
+		-- {"<leader>pg", builtin.live_grep, {} },
+		-- { "n", "<leader>pv", vim.cmd.Ex },
+
+		{ "<leader>hm", harpoon.add_file },
+		{ "<leader>hn", harpoonui.nav_next },
+		{ "<leader>hp", harpoonui.nav_prev },
+		{ "<leader>hv", harpoonui.toggle_quick_menu },
+		unpack(harpoon_nav_binds),
+
+		{ "J", "mzJ`z" },
+		{ "<C-d>", "<C-d>zz" },
+		{ "<C-u>", "<C-u>zz" },
+
+		{ "n", "nzzzv" },
+		{ "N", "Nzzzv" },
+
+		{
+			"<leader>gr",
+			function()
+				trouble.toggle("lsp_references")
+			end,
+		},
+		{
+			"<leader>gf",
+			function()
+				conform.format()
+			end,
+		},
+		{ "<leader>gv", vim.cmd.AerialToggle },
+
+		{
+			"<leader>xx",
+			function()
+				utils.toggle_virtual_text()
+			end,
+		},
+		{
+			"<leader>xf",
+			function()
+				vim.diagnostic.open_float()
+			end,
+		},
+		{
+			"<leader>xv",
+			function()
+				trouble.toggle("diagnostics")
+			end,
+		},
+		{ "<leader>xp", vim.diagnostic.goto_prev },
+		{ "<leader>xn", vim.diagnostic.goto_next },
+		{ "<leader>xu", vim.cmd.UndotreeToggle },
+
+		{ "<leader>vtm", ":TextMode<CR>", { silent = false } },
+	},
+
+	v = {
+		{ "J", ":m '>+1<CR>gv=gv" },
+		{ "K", ":m '<-2<CR>gv=gv" },
+	},
+}
+
+for k, v in pairs(mappings) do
+	for _, m in ipairs(v) do
+		vim.keymap.set(k, unpack(m))
 	end
 end

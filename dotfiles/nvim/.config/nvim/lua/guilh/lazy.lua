@@ -1,4 +1,3 @@
-local vim = vim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
 if not vim.loop.fs_stat(lazypath) then
@@ -35,9 +34,7 @@ require("lazy").setup({
 	},
 	"mateusbraga/vim-spell-pt-br",
 	"stevearc/conform.nvim",
-    "hrsh7th/nvim-cmp",
-	"hrsh7th/cmp-nvim-lsp",
-	--------- Navegation ---------
+	--------- NAVEGATION ---------
 	{
 		"christoomey/vim-tmux-navigator",
 		cmd = {
@@ -56,22 +53,20 @@ require("lazy").setup({
 		},
 	},
 	"bkad/CamelCaseMotion",
+	"echasnovski/mini.pick",
 	{
-		"nvim-telescope/telescope.nvim",
-		tag = "0.1.6",
+		"theprimeagen/harpoon",
 		dependencies = { "nvim-lua/plenary.nvim" },
 	},
-	"theprimeagen/harpoon",
-	--------- Language Specific ---------
+	--------- LANGUAGE SPECIFIC ---------
 	"Kicamon/markdown-table-mode.nvim",
-	--------- Utilities ---------
+	--------- UTILITIES ---------
 	"lambdalisue/suda.vim",
 	{
 		"numToStr/Comment.nvim",
 		lazy = false,
 	},
 	"mbbill/undotree",
-	"L3MON4D3/LuaSnip",
 	"tpope/vim-fugitive",
 	"theprimeagen/git-worktree.nvim",
 })
