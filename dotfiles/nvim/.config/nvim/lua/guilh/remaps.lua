@@ -88,16 +88,32 @@ local mappings = {
 		{ "<leader>xu", vim.cmd.UndotreeToggle },
 
 		{ "<leader>vtm", ":TextMode<CR>", { silent = false } },
+
+		{ "<leader>y", '"+y', { noremap = true } },
+		{ "<leader>d", '"+d', { noremap = true } },
 	},
 
 	v = {
 		{ "J", ":m '>+1<CR>gv=gv" },
 		{ "K", ":m '<-2<CR>gv=gv" },
 	},
+
+	vx = {
+		{ "<leader>y", '"+y<CR>' },
+		{ "<leader>d", '"+d<CR>' },
+	},
 }
 
 for k, v in pairs(mappings) do
+	local key = k
+	if #k > 1 then
+		key = {}
+		for i = 1, #k do
+			table.insert(key, k:sub(i, i))
+		end
+	end
+
 	for _, m in ipairs(v) do
-		vim.keymap.set(k, unpack(m))
+		vim.keymap.set(key, unpack(m))
 	end
 end
