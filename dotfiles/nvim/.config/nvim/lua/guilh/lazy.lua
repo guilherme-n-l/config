@@ -54,6 +54,7 @@ require("lazy").setup({
 	},
 	"bkad/CamelCaseMotion",
 	"echasnovski/mini.pick",
+	"stevearc/oil.nvim",
 	{
 		"theprimeagen/harpoon",
 		dependencies = { "nvim-lua/plenary.nvim" },

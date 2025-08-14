@@ -1,7 +1,6 @@
 local trouble = require("trouble")
 local harpoonui = require("harpoon.ui")
 local harpoon = require("harpoon.mark")
-
 local conform = require("conform")
 local utils = require("guilh.utils")
 
@@ -33,10 +32,9 @@ local mappings = {
 		{ "<leader>ee", "<Plug>CamelCaseMotion_e", { silent = true } },
 
 		{ "<leader>pf", ":Pick files<CR>", { silent = true } },
+		{ "<leader>pv", ":Oil<CR>", { silent = true } },
 		{ "<leader>pg", ":Pick grep_live<CR>", { silent = true } },
 		{ "<leader>ph", ":Pick help<CR>", { silent = true } },
-		-- {"<leader>pg", builtin.live_grep, {} },
-		-- { "n", "<leader>pv", vim.cmd.Ex },
 
 		{ "<leader>hm", harpoon.add_file },
 		{ "<leader>hn", harpoonui.nav_next },
