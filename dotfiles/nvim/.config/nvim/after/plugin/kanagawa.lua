@@ -1,5 +1,3 @@
-local vim = vim
-
 require("kanagawa").setup({
 	compile = false,
 	undercurl = true,
