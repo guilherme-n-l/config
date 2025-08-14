@@ -17,6 +17,7 @@ local opts = {
 
 	swapfile = false,
 	backup = false,
+	undofile = true,
 
 	termguicolors = true,
 
@@ -26,7 +27,8 @@ local opts = {
 	hlsearch = false,
 	incsearch = true,
 
-    winborder = "rounded",
+	winborder = "rounded",
+	completeopt = { "menuone", "noselect", "popup" },
 }
 
 for k, v in pairs(opts) do

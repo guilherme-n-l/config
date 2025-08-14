@@ -60,7 +60,6 @@ local lsps = {
 }
 
 local conform_config = { formatters_by_ft = {} }
--- local cmp_nvim_capabilities = cmp_nvim.default_capabilities()
 for k, lsp in pairs(lsps) do
 	if lsp.health and os.execute(lsp.health) ~= 0 then
 		goto continue
@@ -68,7 +67,7 @@ for k, lsp in pairs(lsps) do
 
 	lspconfig[lsp.name].setup({
 		cmd = lsp.cmd or { lsp.name },
-		on_attach = function()
+		on_attach = function(client, bufnr)
 			local mappings = {
 				n = {
 					{ "gd", vim.lsp.buf.definition },
@@ -79,6 +78,7 @@ for k, lsp in pairs(lsps) do
 				},
 				i = {
 					{ "<C-h>", vim.lsp.buf.signature_help },
+					{ "<C-n>", vim.lsp.completion.get },
 				},
 			}
 
@@ -87,6 +87,13 @@ for k, lsp in pairs(lsps) do
 					vim.keymap.set(k, unpack(m))
 				end
 			end
+
+			vim.lsp.completion.enable(true, client.id, bufnr, {
+				autotrigger = true,
+				convert = function(item)
+					return { abbr = item.label:gsub("%b()", "") }
+				end,
+			})
 		end,
 	})
 
