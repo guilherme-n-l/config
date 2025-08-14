@@ -1,6 +1,4 @@
-local worktree = require("git-worktree")
-
-worktree.setup({
+require("git-worktree").setup({
     change_directory_command = "cd",
     update_on_change = true,
     update_on_change_command = "e .",
