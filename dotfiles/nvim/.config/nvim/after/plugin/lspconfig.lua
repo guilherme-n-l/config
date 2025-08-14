@@ -51,6 +51,12 @@ local lsps = {
 
 		fmts = { "typstfmt" },
 	},
+	md = {
+		health = "marksman --version",
+		name = "marksman",
+
+		fmts = { "mdformat" },
+	},
 }
 
 local conform_config = { formatters_by_ft = {} }
