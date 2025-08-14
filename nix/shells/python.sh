@@ -1,14 +1,18 @@
 #!/bin/bash
 
-ENVIRON=rust
+ENVIRON=python
 
 echo "Welcome to $ENVIRON environment. Use \`help\` for a list of commands"
-for cmd in rustc cargo rust-analyzer rustfmt; do
-    $cmd --version
+
+for cmd in python3 black pylsp pylint mypy; do
+    $cmd --version | grep "$cmd"
 done
 
+isort --version
+
 help() {
-    declare -A functions=()
+    declare -A functions=(
+    )
 
     echo "$ENVIRON environment available commands:"
 

@@ -16,17 +16,28 @@ local lsps = {
 		fmts = { "alejandra" },
 	},
 	rust = {
-		health = "rustc --version",
+		health = "rust-analyzer --version",
 		name = "rust_analyzer",
 		cmd = { "rust-analyzer" },
 
 		fmts = { "rustfmt" },
 	},
 	python = {
-		health = "python3 --version",
+		health = "pylsp --version",
 		name = "pylsp",
-
-		fmts = { "black" },
+		lsp_args = {
+			settings = {
+				pylsp = {
+					plugins = {
+						pylint = { enabled = true, executable = "pylint" },
+						black = { enabled = true },
+						pyls_isort = { enabled = true },
+						pylsp_mypy = { enabled = true },
+					},
+				},
+			},
+		},
+		fmts = { "black", "isort" },
 	},
 	c = {
 		health = "gcc --version || clang --version",
@@ -78,11 +89,12 @@ for k, lsp in pairs(lsps) do
 	end
 
 	for i, fmt in ipairs(lsp.fmts) do
+		conform.formatters[fmt] = {}
+
 		if lsp.fmts_args and lsp.fmts_args[i] then
 			conform.formatters[fmt] = lsp.fmts_args[i]
-		else
-			conform.formatters[fmt] = {}
 		end
+
 		conform.formatters[fmt].command = conform.formatters[fmt].command or fmt
 	end
 
