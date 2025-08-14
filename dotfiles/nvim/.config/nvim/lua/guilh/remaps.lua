@@ -102,16 +102,4 @@ local mappings = {
 	},
 }
 
-for k, v in pairs(mappings) do
-	local key = k
-	if #k > 1 then
-		key = {}
-		for i = 1, #k do
-			table.insert(key, k:sub(i, i))
-		end
-	end
-
-	for _, m in ipairs(v) do
-		vim.keymap.set(key, unpack(m))
-	end
-end
+utils.set_keymaps(mappings)

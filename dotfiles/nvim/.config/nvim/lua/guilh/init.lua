@@ -1,5 +1,4 @@
 require("guilh.lazy")
-require("guilh.functions")
 require("guilh.remaps")
 
 local opts = {
@@ -34,3 +33,5 @@ local opts = {
 for k, v in pairs(opts) do
 	vim.opt[k] = v
 end
+
+vim.api.nvim_create_user_command("TextMode", "set wrap | set spell | set spelllang=pt,en", {})
