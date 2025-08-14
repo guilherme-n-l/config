@@ -144,6 +144,7 @@
     CONFIG_PATH = "~/config";
     HISTDUP = "erase";
     EDITOR = "nvim";
+    RIPGREP_CONFIG_PATH= "~/.ripgreprc";
   };
 
   envPath = {
@@ -185,7 +186,7 @@
       kvp);
 
   envString = toShellStatements {
-    keyword = "";
+    keyword = "export ";
     separator = "=";
     quoteValue = false;
     kvp = env;
