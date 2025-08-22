@@ -61,6 +61,11 @@ require("lazy").setup({
 	},
 	--------- LANGUAGE SPECIFIC ---------
 	"Kicamon/markdown-table-mode.nvim",
+	{
+		"chomosuke/typst-preview.nvim",
+		lazy = false, -- or ft = 'typst'
+		version = "1.*",
+	},
 	--------- UTILITIES ---------
 	"lambdalisue/suda.vim",
 	{
