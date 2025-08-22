@@ -57,6 +57,27 @@ local lsps = {
 
 		fmts = { "mdformat" },
 	},
+	typescript = {
+		name = "ts_ls",
+		cmd = { "typescript-language-server", "--stdio" },
+		health = "typescript-language-server --version",
+
+		fmts = { "prettier" },
+	},
+	javascript = {
+		name = "ts_ls",
+		cmd = { "typescript-language-server", "--stdio" },
+		health = "typescript-language-server --version",
+
+		fmts = { "prettier" },
+	},
+	perl = {
+		name = "perlpls",
+		cmd = { "pls" },
+		health = "echo '' | pls",
+
+		fmts = { "perltidy" },
+	},
 }
 
 local conform_config = { formatters_by_ft = {} }
