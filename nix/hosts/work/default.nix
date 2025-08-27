@@ -80,7 +80,7 @@ in {
     };
   };
 
-  environment.systemPackages = (import ./packages.nix {inherit pkgs inputs;}).pkgs;
+  environment.systemPackages = import ./packages.nix {inherit pkgs inputs;};
 
   programs = {
     mtr.enable = true;

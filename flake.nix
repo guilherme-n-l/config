@@ -6,7 +6,7 @@
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
-    wezterm.url = "github:wezterm/wezterm?dir=nix";
+    yap.url = "github:guilherme-n-l/yap?dir=nix";
     homebrew-cask = {
       url = "github:homebrew/homebrew-cask";
       flake = false;
