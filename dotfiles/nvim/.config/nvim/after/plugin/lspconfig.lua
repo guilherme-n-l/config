@@ -64,6 +64,13 @@ local lsps = {
 
 		fmts = { "prettier" },
 	},
+	perl = {
+		name = "perlpls",
+		cmd = { "pls" },
+		health = "echo '' | pls",
+
+		fmts = { "perltidy" },
+	},
 }
 
 local conform_config = { formatters_by_ft = {} }
