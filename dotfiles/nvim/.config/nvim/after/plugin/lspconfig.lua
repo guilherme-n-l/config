@@ -40,7 +40,7 @@ local lsps = {
 		fmts = { "black", "isort" },
 	},
 	c = {
-		health = "gcc --version || clang --version",
+		health = "clangd --version",
 		name = "clangd",
 
 		fmts = { "clang-format" },
