@@ -51,7 +51,7 @@ local lsps = {
 
 		fmts = { "typstfmt" },
 	},
-	md = {
+	markdown = {
 		health = "marksman --version",
 		name = "marksman",
 
