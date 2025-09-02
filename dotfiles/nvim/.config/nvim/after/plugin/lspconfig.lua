@@ -40,7 +40,7 @@ local lsps = {
 		fmts = { "black", "isort" },
 	},
 	c = {
-		health = "gcc --version || clang --version",
+		health = "clangd --version",
 		name = "clangd",
 
 		fmts = { "clang-format" },
@@ -51,18 +51,32 @@ local lsps = {
 
 		fmts = { "typstfmt" },
 	},
-	md = {
+	markdown = {
 		health = "marksman --version",
 		name = "marksman",
 
 		fmts = { "mdformat" },
 	},
-	ts = {
+	typescript = {
 		name = "ts_ls",
 		cmd = { "typescript-language-server", "--stdio" },
-        health = "typescript-language-server --version",
+		health = "typescript-language-server --version",
 
 		fmts = { "prettier" },
+	},
+	javascript = {
+		name = "ts_ls",
+		cmd = { "typescript-language-server", "--stdio" },
+		health = "typescript-language-server --version",
+
+		fmts = { "prettier" },
+	},
+	perl = {
+		name = "perlpls",
+		cmd = { "pls" },
+		health = "echo '' | pls",
+
+		fmts = { "perltidy" },
 	},
 }
 
