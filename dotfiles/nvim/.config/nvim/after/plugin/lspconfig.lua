@@ -19,6 +19,13 @@ local lsps = {
 		health = "rust-analyzer --version",
 		name = "rust_analyzer",
 		cmd = { "rust-analyzer" },
+		lsp_args = {
+			settings = {
+				["rust-analyzer"] = {
+					check = { command = "clippy" },
+				},
+			},
+		},
 
 		fmts = { "rustfmt" },
 	},
