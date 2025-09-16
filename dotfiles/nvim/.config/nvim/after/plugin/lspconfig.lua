@@ -93,7 +93,7 @@ for k, lsp in pairs(lsps) do
 		goto continue
 	end
 
-	lspconfig[lsp.name].setup({
+	lsp_config = {
 		cmd = lsp.cmd or { lsp.name },
 		on_attach = function(client, bufnr)
 			local mappings = {
@@ -123,7 +123,13 @@ for k, lsp in pairs(lsps) do
 				end,
 			})
 		end,
-	})
+	}
+
+	if lsp.lsp_args then
+		lsp_config = vim.tbl_deep_extend("force", lsp_config, lsp.lsp_args)
+	end
+
+	lspconfig[lsp.name].setup(lsp_config)
 
 	if not lsp.fmts then
 		goto continue
