@@ -9,6 +9,10 @@ local lsps = {
 		fmts = { "stylua" },
 		fmts_args = { { prepend_args = { "--syntax", "Lua52" } } },
 	},
+	go = {
+		name = "gopls",
+		fmts = { "gofmt" },
+	},
 	nix = {
 		name = "nil_ls",
 		cmd = { "nil" },
