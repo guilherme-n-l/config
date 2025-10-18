@@ -3,7 +3,7 @@
 ENVIRON=rust
 
 echo "Welcome to $ENVIRON environment. Use \`help\` for a list of commands"
-for cmd in rustc cargo rust-analyzer rustfmt; do
+for cmd in rustc cargo rust-analyzer rustfmt rust-lldb; do
     $cmd --version
 done
 
