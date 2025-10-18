@@ -93,7 +93,7 @@ local lsps = {
 
 local conform_config = { formatters_by_ft = {} }
 for k, lsp in pairs(lsps) do
-	if lsp.health and os.execute(lsp.health) ~= 0 then
+	if lsp.health and os.execute(lsp.health.." &> /dev/null") ~= 0 then
 		goto continue
 	end
 
