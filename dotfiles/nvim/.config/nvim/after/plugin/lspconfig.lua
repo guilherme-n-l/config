@@ -1,133 +1,54 @@
 local lspconfig = require("lspconfig")
 local conform = require("conform")
+local lsps = dofile(vim.fn.stdpath('config') .. '/after/plugin/lsps.lua')
 
-local lsps = {
-	lua = {
-		name = "lua_ls",
-		cmd = { "lua-lsp" },
+local conform_config = { formatters_by_ft = {} }
 
-		fmts = { "stylua" },
-		fmts_args = { { prepend_args = { "--syntax", "Lua52" } } },
+local mappings = {
+	n = {
+		{ "gd", vim.lsp.buf.definition },
+		{ "K", vim.lsp.buf.hover },
+		{ "<leader>vca", vim.lsp.buf.code_action },
+		{ "<leader>vrr", vim.lsp.buf.references },
+		{ "<leader>vrn", vim.lsp.buf.rename },
 	},
-	go = {
-		name = "gopls",
-		fmts = { "gofmt" },
-	},
-	nix = {
-		name = "nil_ls",
-		cmd = { "nil" },
-
-		fmts = { "alejandra" },
-	},
-	rust = {
-		health = "rust-analyzer --version",
-		name = "rust_analyzer",
-		cmd = { "rust-analyzer" },
-		lsp_args = {
-			settings = {
-				["rust-analyzer"] = {
-					check = { command = "clippy" },
-				},
-			},
-		},
-
-		fmts = { "rustfmt" },
-	},
-	python = {
-		health = "pylsp --version",
-		name = "pylsp",
-		lsp_args = {
-			settings = {
-				pylsp = {
-					plugins = {
-						pylint = { enabled = true, executable = "pylint" },
-						black = { enabled = true },
-						pyls_isort = { enabled = true },
-						pylsp_mypy = { enabled = true },
-					},
-				},
-			},
-		},
-		fmts = { "black", "isort" },
-	},
-	c = {
-		health = "clangd --version",
-		name = "clangd",
-
-		fmts = { "clang-format" },
-	},
-	typst = {
-		health = "tinymist --version",
-		name = "tinymist",
-
-		fmts = { "typstfmt" },
-	},
-	markdown = {
-		health = "marksman --version",
-		name = "marksman",
-
-		fmts = { "mdformat" },
-	},
-	typescript = {
-		name = "ts_ls",
-		cmd = { "typescript-language-server", "--stdio" },
-		health = "typescript-language-server --version",
-
-		fmts = { "prettier" },
-	},
-	javascript = {
-		name = "ts_ls",
-		cmd = { "typescript-language-server", "--stdio" },
-		health = "typescript-language-server --version",
-
-		fmts = { "prettier" },
-	},
-	perl = {
-		name = "perlpls",
-		cmd = { "pls" },
-		health = "echo '' | pls",
-
-		fmts = { "perltidy" },
+	i = {
+		{ "<C-h>", vim.lsp.buf.signature_help },
+		{ "<C-n>", vim.lsp.completion.get },
 	},
 }
 
-local conform_config = { formatters_by_ft = {} }
-for k, lsp in pairs(lsps) do
-	if lsp.health and os.execute(lsp.health.." &> /dev/null") ~= 0 then
-		goto continue
+--- Loads LSP key mappings.
+local function load_mappings()
+	for k, v in pairs(mappings) do
+		for _, m in ipairs(v) do
+			vim.keymap.set(k, unpack(m))
+		end
+	end
+end
+
+--- Enables LSP completion for a client and buffer.
+--- @param client table The LSP client.
+--- @param bufnr number The buffer number.
+local function load_enable_completion(client, bufnr)
+	vim.lsp.completion.enable(true, client.id, bufnr, {
+		autotrigger = true,
+		convert = function(item)
+			return { abbr = item.label:gsub("%b()", "") }
+		end,
+	})
+end
+
+--- Loads LSP and formatters for a given file type.
+--- @param ft string The file type.
+local function load_lsp_by_ft(ft)
+	lsp = lsps[ft]
+
+	if lsp.health and os.execute(lsp.health .. " &> /dev/null") ~= 0 then
+		return
 	end
 
-	lsp_config = {
-		cmd = lsp.cmd or { lsp.name },
-		on_attach = function(client, bufnr)
-			local mappings = {
-				n = {
-					{ "gd", vim.lsp.buf.definition },
-					{ "K", vim.lsp.buf.hover },
-					{ "<leader>vca", vim.lsp.buf.code_action },
-					{ "<leader>vrr", vim.lsp.buf.references },
-					{ "<leader>vrn", vim.lsp.buf.rename },
-				},
-				i = {
-					{ "<C-h>", vim.lsp.buf.signature_help },
-					{ "<C-n>", vim.lsp.completion.get },
-				},
-			}
-
-			for k, v in pairs(mappings) do
-				for _, m in ipairs(v) do
-					vim.keymap.set(k, unpack(m))
-				end
-			end
-
-			vim.lsp.completion.enable(true, client.id, bufnr, {
-				autotrigger = true,
-				convert = function(item)
-					return { abbr = item.label:gsub("%b()", "") }
-				end,
-			})
-		end,
-	}
+	lsp_config = { cmd = lsp.cmd or { lsp.name } }
 
 	if lsp.lsp_args then
 		lsp_config = vim.tbl_deep_extend("force", lsp_config, lsp.lsp_args)
@@ -136,7 +57,7 @@ for k, lsp in pairs(lsps) do
 	lspconfig[lsp.name].setup(lsp_config)
 
 	if not lsp.fmts then
-		goto continue
+		return
 	end
 
 	for i, fmt in ipairs(lsp.fmts) do
@@ -149,8 +70,32 @@ for k, lsp in pairs(lsps) do
 		conform.formatters[fmt].command = conform.formatters[fmt].command or fmt
 	end
 
-	conform_config.formatters_by_ft[k] = lsp.fmts
-	::continue::
+	conform_config.formatters_by_ft[ft] = lsp.fmts
+	conform.setup(conform_config)
+end
+
+--- Creates an autocmd to load LSP for a file type.
+--- @param ft string The file type.
+local function lsp_autocmd_by_ft(ft)
+	vim.api.nvim_create_autocmd("FileType", {
+		pattern = ft,
+		callback = function()
+			load_lsp_by_ft(ft)
+		end,
+	})
+end
+
+--- Callback when LSP attaches to a buffer, loads mappings and completion.
+--- @param client table The LSP client.
+--- @param bufnr number The buffer number.
+local function on_attach(client, bufnr)
+	load_mappings()
+	load_enable_completion(client, bufnr)
+end
+
+for ft, lsp in pairs(lsps) do
+	lsp_autocmd_by_ft(ft)
+	lspconfig[lsp.name].setup({ on_attach = on_attach })
 end
 
 conform.setup(conform_config)
