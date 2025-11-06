@@ -2,6 +2,7 @@ local trouble = require("trouble")
 local harpoonui = require("harpoon.ui")
 local harpoon = require("harpoon.mark")
 local conform = require("conform")
+local opencode = require("opencode")
 local utils = require("guilh.utils")
 
 local globals = {
@@ -82,6 +83,17 @@ local mappings = {
 
 		{ "<leader>y", '"+y', { noremap = true } },
 		{ "<leader>d", '"+d', { noremap = true } },
+
+		{ "<leader>ot", opencode.toggle },
+	},
+
+	nx = {
+		{
+			"<leader>oa",
+			function()
+				opencode.ask("@this: ", { submit = true })
+			end,
+		},
 	},
 
 	v = {

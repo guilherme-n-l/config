@@ -72,6 +72,16 @@ require("lazy").setup({
 		"numToStr/Comment.nvim",
 		lazy = false,
 	},
+
+	{
+		"NickvanDyke/opencode.nvim",
+		dependencies = {
+			{ "folke/snacks.nvim", opts = { input = {}, picker = {}, terminal = {} } },
+		},
+		config = function()
+			vim.o.autoread = true
+		end,
+	},
 	"mbbill/undotree",
 	"tpope/vim-fugitive",
 	"theprimeagen/git-worktree.nvim",
