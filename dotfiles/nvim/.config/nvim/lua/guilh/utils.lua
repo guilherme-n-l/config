@@ -2,6 +2,7 @@ local Utils = {}
 
 local virtual_text_state = false
 
+--- Toggles the display of virtual text for diagnostics.
 function Utils.toggle_virtual_text()
 	virtual_text_state = not virtual_text_state
 	if virtual_text_state then
@@ -15,6 +16,8 @@ function Utils.toggle_virtual_text()
 	end
 end
 
+--- Sets key mappings from a provided table.
+---@param mappings table The key mappings to set.
 function Utils.set_keymaps(mappings)
 	for k, v in pairs(mappings) do
 		local key = k
