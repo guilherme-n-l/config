@@ -1,5 +1,5 @@
+dofile(vim.fn.stdpath("config") .. "/utils.lua")
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-
 if not vim.loop.fs_stat(lazypath) then
 	vim.fn.system({
 		"git",
@@ -10,79 +10,8 @@ if not vim.loop.fs_stat(lazypath) then
 		lazypath,
 	})
 end
-
 vim.opt.rtp:prepend(lazypath)
-
-require("lazy").setup({
-	--------- GUI ---------
-	{
-		"nvim-lualine/lualine.nvim",
-		dependencies = { "nvim-tree/nvim-web-devicons" },
-	},
-	"rebelot/kanagawa.nvim",
-	"lewis6991/gitsigns.nvim",
-	--------- LSP ---------
-	"nvim-treesitter/nvim-treesitter",
-	{
-		"VonHeikemen/lsp-zero.nvim",
-		branch = "v3.x",
-	},
-	"neovim/nvim-lspconfig",
-	{
-		"folke/trouble.nvim",
-		dependencies = { "nvim-tree/nvim-web-devicons" },
-	},
-	"mateusbraga/vim-spell-pt-br",
-	"stevearc/conform.nvim",
-	--------- NAVEGATION ---------
-	{
-		"christoomey/vim-tmux-navigator",
-		cmd = {
-			"TmuxNavigateLeft",
-			"TmuxNavigateDown",
-			"TmuxNavigateUp",
-			"TmuxNavigateRight",
-			"TmuxNavigatePrevious",
-		},
-		keys = {
-			{ "<c-h>", "<cmd><C-U>TmuxNavigateLeft<cr>" },
-			{ "<c-j>", "<cmd><C-U>TmuxNavigateDown<cr>" },
-			{ "<c-k>", "<cmd><C-U>TmuxNavigateUp<cr>" },
-			{ "<c-l>", "<cmd><C-U>TmuxNavigateRight<cr>" },
-			{ "<c-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
-		},
-	},
-	"bkad/CamelCaseMotion",
-	"echasnovski/mini.pick",
-	"stevearc/oil.nvim",
-	{
-		"theprimeagen/harpoon",
-		dependencies = { "nvim-lua/plenary.nvim" },
-	},
-	--------- LANGUAGE SPECIFIC ---------
-	"Kicamon/markdown-table-mode.nvim",
-	{
-		"chomosuke/typst-preview.nvim",
-		lazy = false, -- or ft = 'typst'
-		version = "1.*",
-	},
-	--------- UTILITIES ---------
-	"lambdalisue/suda.vim",
-	{
-		"numToStr/Comment.nvim",
-		lazy = false,
-	},
-
-	{
-		"NickvanDyke/opencode.nvim",
-		dependencies = {
-			{ "folke/snacks.nvim", opts = { input = {}, picker = {}, terminal = {} } },
-		},
-		config = function()
-			vim.o.autoread = true
-		end,
-	},
-	"mbbill/undotree",
-	"tpope/vim-fugitive",
-	"theprimeagen/git-worktree.nvim",
+require("lazy").setup({ { import = User .. ".plugins" } }, {
+	checker = { enabled = true, notify = false },
+	change_detection = { notify = false },
 })
