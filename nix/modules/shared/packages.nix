@@ -26,4 +26,4 @@
   nil
   alejandra
 ])
-++ (with inputs; [yap.packages.${pkgs.system}.default])
+++ (with inputs; [ yap.packages.${pkgs.system}.default ])

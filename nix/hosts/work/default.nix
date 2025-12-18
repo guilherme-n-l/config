@@ -2,15 +2,20 @@
   inputs,
   lib,
   ...
-}: let
+}:
+let
   variables = import ./../../modules/shared/variables.nix;
 
   pkgs = import inputs.nixpkgs {
     system = variables.x86Arch;
     config.allowUnfree = true;
   };
-in {
-  imports = [./hardware-configuration.nix ./../../modules/shared];
+in
+{
+  imports = [
+    ./hardware-configuration.nix
+    (import ./../../modules/shared { inherit inputs pkgs; })
+  ];
 
   hardware.bluetooth = {
     enable = true;
@@ -49,7 +54,7 @@ in {
       xkb = {
         extraLayouts.br-custom = {
           symbolsFile = ../../../keyboard/symbols/br-custom;
-          languages = ["pt-br"];
+          languages = [ "pt-br" ];
           description = "Custom keyboard configuration based on the abnt2 layout";
         };
 
@@ -76,11 +81,14 @@ in {
   users.users = with variables; {
     ${user} = {
       isNormalUser = true;
-      extraGroups = ["wheel" "docker"];
+      extraGroups = [
+        "wheel"
+        "docker"
+      ];
     };
   };
 
-  environment.systemPackages = import ./packages.nix {inherit pkgs inputs;};
+  environment.systemPackages = import ./packages.nix { inherit pkgs inputs; };
 
   programs = {
     mtr.enable = true;
@@ -99,20 +107,8 @@ in {
   };
 
   networking.firewall = {
-    allowedTCPPorts = [22];
-    allowedUDPPorts = [22];
-  };
-
-  fileSystems = {
-    "/" = {
-      device = "/dev/nvme0n1p3";
-      fsType = "ext4";
-    };
-
-    "/boot" = {
-      device = "/dev/nvme0n1p1";
-      fsType = "vfat";
-    };
+    allowedTCPPorts = [ 22 ];
+    allowedUDPPorts = [ 22 ];
   };
 
   virtualisation.docker.enable = true;

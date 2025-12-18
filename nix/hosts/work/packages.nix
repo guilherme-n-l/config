@@ -19,4 +19,8 @@ in
     unzip
     wezterm
     (alias wezterm "wezterm" "wt")
+    omnissa-horizon-client
+    nixd
+    nixfmt
+    # tailscale
   ]

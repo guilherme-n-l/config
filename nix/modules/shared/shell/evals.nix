@@ -1,0 +1,3 @@
+[
+  "$(zoxide init $(basename $SHELL))"
+]
