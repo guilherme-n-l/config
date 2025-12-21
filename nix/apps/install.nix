@@ -9,13 +9,22 @@ with inputs;
         system:
         let
           pkgs = import nixpkgs { inherit system; };
+          utils = import ../modules/shared/utils.nix { inherit pkgs; };
           functionName = "install_config";
-          script = pkgs.writeScriptBin functionName ''
-            #!${pkgs.zsh}/bin/zsh
-            ${(import ../modules/shared/usrShell.nix { inherit pkgs; }).programs.zsh.promptInit}
-            PATH=${pkgs.stow}:$PATH
-            ${functionName}
-          '';
+          configPath = "CONFIG_PATH";
+          script =
+            with utils;
+            pkgs.writeScriptBin functionName ''
+              #!${pkgs.zsh}/bin/zsh
+              ${mkShellVariables {
+                vars."${configPath}" = (import ../modules/shared/shell/env.nix).${configPath};
+              }}
+              ${mkShellFunctions {
+                "${functionName}" = (import ../modules/shared/shell/functions.nix).${functionName};
+              }}
+              PATH=${pkgs.stow}/bin:$PATH
+              ${functionName}
+            '';
         in
         {
           type = "app";
