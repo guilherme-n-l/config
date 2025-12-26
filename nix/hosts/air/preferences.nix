@@ -1,10 +1,11 @@
-{...}: {
+{ ... }:
+{
   system.defaults = {
     finder.FXPreferredViewStyle = "clmv";
 
     dock = {
-      persistent-apps = [];
-      persistent-others = [];
+      persistent-apps = [ ];
+      persistent-others = [ ];
       orientation = "left";
       tilesize = 53;
       autohide = true;

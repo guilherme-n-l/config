@@ -1,4 +1,5 @@
-{inputs, pkgs}: {
+{ inputs, pkgs }:
+{
   casks = [
     "librewolf"
     "libreoffice"
@@ -17,9 +18,11 @@
     "clang-format"
   ];
 
-  pkgs = [];
+  pkgs = [ ];
 
-  taps = {"homebrew/homebrew-cask" = inputs.homebrew-cask;};
+  taps = {
+    "homebrew/homebrew-cask" = inputs.homebrew-cask;
+  };
   # pkgs = with pkgs; [
   # ];
 }

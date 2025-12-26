@@ -3,27 +3,30 @@
   pkgs,
 }:
 (with pkgs; [
-  ffmpeg
-  neovim
-  git
-  lazygit
-  curl
-  wget
-  yazi
-  fzf
-  fd
-  stow
-  tree
-  ripgrep
-  zoxide
-  tealdeer
+  # NIX LSP
+  nixd
+  nixfmt
 
   # LUA LSP
   luajitPackages.lua-lsp
   stylua
 
-  # NIX LSP
-  nil
-  alejandra
+  # SHELL DEPENDENCIES
+  fd
+  fzf
+  zsh-fzf-tab
+  stow
+  gnugrep
+  git
+  zoxide
+  ripgrep
+  tree
+  tealdeer
+  lazygit
+  curl
+  wget
+  neovim
+  yazi
+  ffmpeg
 ])
 ++ (with inputs; [ yap.packages.${pkgs.system}.default ])

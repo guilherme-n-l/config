@@ -1,21 +1,22 @@
 {
   inputs,
-  nixpkgs,
   ...
-}: let
+}:
+let
   variables = import ./../../modules/shared/variables.nix;
 
-  pkgs = import nixpkgs {
+  pkgs = import inputs.nixpkgs {
     system = variables.darwinArch;
     config.allowUnfree = true;
   };
 
-  packages = import ./packages.nix {inherit inputs pkgs;};
-in {
+  packages = import ./packages.nix { inherit inputs pkgs; };
+in
+{
   imports = [
     inputs.nix-homebrew.darwinModules.nix-homebrew
     ./preferences.nix
-    ./../../modules/shared
+    (import ./../../modules/shared { inherit inputs pkgs; })
   ];
 
   config = {
@@ -57,7 +58,9 @@ in {
       enableAutosuggestions = true;
       enableSyntaxHighlighting = true;
       enableFzfCompletion = true;
-      variables = {DYLD_LIBRARY_PATH = "/usr/local/lib";};
+      variables = {
+        DYLD_LIBRARY_PATH = "/usr/local/lib";
+      };
     };
 
     nixpkgs.hostPlatform = variables.darwinArch;

@@ -19,17 +19,13 @@
       specialArgs = { inherit inputs; };
     in
     {
-      darwinConfigurations = {
-        air = nix-darwin.lib.darwinSystem {
-          modules = [ ./nix/hosts/air ];
-          inherit specialArgs;
-        };
+      darwinConfigurations.air = nix-darwin.lib.darwinSystem {
+        modules = [ ./nix/hosts/air ];
+        inherit specialArgs;
       };
-      nixosConfigurations = {
-        work = nixpkgs.lib.nixosSystem {
-          modules = [ ./nix/hosts/work ];
-          inherit specialArgs;
-        };
+      nixosConfigurations.work = nixpkgs.lib.nixosSystem {
+        modules = [ ./nix/hosts/work ];
+        inherit specialArgs;
       };
     }
     // (import ./nix/apps/install.nix specialArgs); # nix run .#install

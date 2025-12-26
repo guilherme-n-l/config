@@ -1,7 +1,3 @@
-{
-  pkgs ? import <nixpkgs> { },
-}:
 [
-  "${pkgs.zinit}/share/zinit/zinit.zsh"
-  "${pkgs.fzf}/share/fzf/completion.zsh"
+  ''"$(sed 's/\(.*\)\/bin.*/\1/' <(readlink -f $(which fzf | head -n 1)))/share/fzf/completion.zsh"''
 ]

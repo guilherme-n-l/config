@@ -1,5 +1,7 @@
-{pkgs ? import <nixpkgs> {}}:
+{
+  pkgs ? import <nixpkgs> { },
+}:
 pkgs.mkShell {
-  buildInputs = with pkgs; [xdcc-cli];
+  buildInputs = with pkgs; [ xdcc-cli ];
   shellHook = builtins.readFile ./anime.sh;
 }
