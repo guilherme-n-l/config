@@ -12,7 +12,7 @@ with variables // utils { inherit pkgs; };
     promptInit = ''
       ${mkShellSources (import ./shell/sources.nix)}
       ${mkShellVariables { vars = import ./shell/env.nix; }}
-      ${mkShellPath (import ./shell/path.nix { inherit pkgs; })}
+      ${mkShellPath (import ./shell/path.nix)}
       ${mkShellFunctions (import ./shell/functions.nix)}
       ${mkShellVariables {
         vars.PS1 = "'$(_update_prompt)'";

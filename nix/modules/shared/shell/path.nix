@@ -1,9 +1,21 @@
-{
-  pkgs ? import <nixpkgs> { },
-}:
-[
-  "$HOME/.go/bin"
-  "$HOME/.bun/bin"
-  "$HOME/.local/bin"
-  "${pkgs.nodejs_24}/bin"
+let
+  # [ "$HOME/[DIR]/bin" ]
+  toHomeBinPath =
+    list:
+    (map (
+      x:
+      builtins.concatStringsSep "/" [
+        "$HOME"
+        x
+        "bin"
+      ]
+    ) list);
+in
+[ ]
+++ toHomeBinPath [
+  ".npm"
+  ".go"
+  ".bun"
+  ".cargo"
+  ".local"
 ]
