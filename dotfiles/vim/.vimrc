@@ -1,26 +1,56 @@
+" --- Prelude ---
+
+if !exists('g:env')
+    if has('win64') || has('win32') || has('win16')
+        let g:env = 'WINDOWS'
+    else
+        let g:env = toupper(trim(system('uname')))
+    endif
+endif
+
 " --- Looks ---
 
 set nu
 set rnu
 set ru
+set noswf
 syntax on
 
 " --- Remaps ---
 
 let mapleader = " "
-let remaps = {
-            \ 'n': [ '<leader>x :bd<CR>', 'J mzJ`z', '<C-d> <C-d>zz', '<C-u> <C-u>zz', 'n nzzzv', 'N Nzzzv' ],
-            \ 'v': [ "K :m '<-2<CR>gv=gv", "J :m '>+1<CR>gv=gv" ],
-            \ 'nvx': [ '<leader>y "+y', '<leader>d "+d' ]
-            \ }
+let s:REMAPS = {
+    \ 'n': [
+        \'<leader>x :bd<CR>',
+        \ 'J mzJ`z',
+        \ '<C-d> <C-d>zz',
+        \ '<C-u> <C-u>zz',
+        \ 'n nzzzv',
+        \ 'N Nzzzv',
+        \ '<leader>pf :Ex<CR>'
+    \],
+    \ 'v': [
+        \ "K :m '<-2<CR>gv=gv",
+        \ "J :m '>+1<CR>gv=gv"
+    \],
+    \ 'nvx': [
+        \ '<leader>y "+y',
+        \ '<leader>d "+d',
+        \ '<leader>p "+p'
+    \]
+\ }
 
-for [k, v] in items(remaps)
-    for c in split(k, '\zs')
-        for km in v
-            execute c . 'noremap ' . km
+function s:CreateRemaps()
+    for [k, v] in items(s:REMAPS)
+        for c in split(k, '\zs')
+            for km in v
+                execute c . 'noremap ' . km
+            endfor
         endfor
     endfor
-endfor
+endfunction
+
+call s:CreateRemaps()
 
 
 " --- Commands ---
@@ -39,7 +69,6 @@ function! s:Uniq(bang) range
         endfor
         call filter(found, { _, v -> !v })
         let lines = keys(found)
-        echo lines
         for i in range(0, len(lines) - 1)
             call setline(a:firstline + i, lines[i])
         endfor
@@ -61,7 +90,61 @@ command! -range=% ToList <line1>, <line2>call s:ToList()
 function! s:ToList() range
     for i in range(a:firstline, a:lastline)
         let prefix = i == a:firstline? '[' : ''
-        let suffix = i == a:lastline ? ']' : ''
+        let suffix = i == a:lastline ? ']' : ','
         call setline(i, printf('%s"%s"%s', prefix, trim(getline(i)), suffix))
     endfor
+endfunction
+
+
+let s:INVOKE = {
+    \ 'WINDOWS': [ 'powershell', '-NoLogo', '-Command', 'Start-Process' ],
+    \ 'LINUX': [ 'xdg-open' ],
+    \ 'DARWIN': [ 'open' ]
+\}
+
+" :OpenWindow - Convert lines to ES `window.open` command
+"
+" Usage:
+"   :<range>OpenWindow   - Trims lines and converts them to `window.open` command
+"   :<range>OpenWindow!  - Tries to open in browser
+"
+command! -bang -range=% -nargs=? OpenWindow <line1>, <line2>call s:OpenWindow(<bang>0, <f-args>)
+function! s:OpenWindow(bang, ...) range
+    let url = a:0 > 0 ? a:1 : ''
+
+    let ParseUrl = {placeholder -> substitute(
+        \ url =~ '{}' 
+            \ ? url 
+            \ : (url ==# '' 
+                \ ? '{}' 
+                \ : substitute(url, '/\+$', '/{}', '')),
+        \ '{}',
+        \ placeholder, 'g'
+    \ )}
+
+    let ParseUrl = {placeholder -> len(url)
+        \ ? url =~ '{}'
+            \ ? substitute(url, '{}', placeholder, 'g')
+            \ : substitute(url, '/*$', '/' . placeholder, '')
+        \ : placeholder
+    \}
+
+    if a:bang
+        for i in range(a:firstline, a:lastline)
+            let ln = trim(getline(i))
+            if !len(ln)
+                continue
+            endif
+            let cmd = map(copy(s:INVOKE[g:env]), {i, v -> i ? shellescape(v) : v})
+            call add(cmd, ParseUrl(ln))
+            call system(join(cmd, " "))
+        endfor
+    else
+        execute printf('silent %d,%dToList',
+            \ a:firstline,
+            \ a:lastline)
+        call setline(a:lastline,
+            \ getline(a:lastline) . printf('.forEach(i => window.open("%s"))',
+            \ ParseUrl('${i}')))
+    endif
 endfunction
