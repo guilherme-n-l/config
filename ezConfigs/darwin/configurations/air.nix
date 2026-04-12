@@ -1,15 +1,15 @@
 {
+  inputs,
   ezModules,
   ...
 }:
 let
   user = "guilh";
-  taps = { };
 in
 {
   imports = with ezModules; [
-    homebrew
     packages
+    homebrew
   ];
 
   system = {
@@ -58,15 +58,21 @@ in
   };
 
   homebrew = {
-    brews = [ ];
-    casks = [ ];
-    taps = builtins.attrNames taps;
+    brews = [
+    ];
+    casks = [
+      "librewolf"
+      "libreoffice"
+      "stolendata-mpv"
+      "keepassxc"
+      "gimp"
+      "spotify"
+      "iterm2"
+    ];
+    cargoPackages = [
+      "ripgrep"
+    ];
   };
-
-  # nix-homebrew = {
-  #   user = user;
-  #   taps = taps;
-  # };
 
   nix = {
     distributedBuilds = true;
