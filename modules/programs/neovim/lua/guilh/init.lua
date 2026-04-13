@@ -38,6 +38,15 @@ o.completeopt = { "menuone", "noselect", "popup" }
 o.termguicolors = true
 g.colorscheme = "kanagawa-dragon"
 
+local function transparent_bg()
+    for _, hl in ipairs({ "LineNr", "LineNrAbove", "LineNrBelow", "SignColumn" }) do
+        vim.api.nvim_set_hl(0, hl, { bg = "NONE" })
+    end
+    vim.api.nvim_set_hl(0, "CursorLineNr", { bg = "NONE", bold = true })
+end
+
+Do_after({ [transparent_bg] = "ColorScheme" })
+
 -- Keymaps
 local function pick(arg)
     return string.format("<cmd>Pick %s<cr>", arg)

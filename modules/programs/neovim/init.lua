@@ -1,2 +1,2 @@
 require("guilh")
-Do_after({ Load_colorscheme })
+Load_colorscheme()
