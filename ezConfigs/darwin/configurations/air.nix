@@ -1,6 +1,6 @@
 {
-  inputs,
   ezModules,
+  config,
   ...
 }:
 let
@@ -10,6 +10,7 @@ in
   imports = with ezModules; [
     packages
     homebrew
+    zsh
   ];
 
   system = {
@@ -50,10 +51,13 @@ in
     };
   };
 
+  users.knownUsers = [ user ];
+
   users.users = {
     root.home = "/var/root";
     ${user} = {
       uid = 501;
+      shell = config.darwin.zsh.package;
     };
   };
 
@@ -61,18 +65,31 @@ in
     brews = [
     ];
     casks = [
+      # Web
       "librewolf"
+
+      # Productivity
       "libreoffice"
-      "stolendata-mpv"
-      "keepassxc"
-      "gimp"
-      "spotify"
+      "claude-code"
+      "omnissa-horizon-client"
+
+      # Utils
       "iterm2"
+      "keepassxc"
+      "stolendata-mpv"
+
+      # Design
+      "gimp"
+
+      # Fun
+      "spotify"
     ];
     cargoPackages = [
       "ripgrep"
     ];
   };
+
+  darwin.zsh.homebrew = true;
 
   nix = {
     distributedBuilds = true;
