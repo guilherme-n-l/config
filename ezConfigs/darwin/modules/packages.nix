@@ -1,6 +1,6 @@
-{ shared, pkgs, ... }@args:
+{ shared, pkgs, inputs, ... }:
 let
-  sharedEnv = shared args;
+  sharedEnv = shared { inherit pkgs inputs; };
 in
 {
   environment.systemPackages = sharedEnv.packages;
