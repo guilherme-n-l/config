@@ -20,6 +20,10 @@ setopt hist_find_no_dups
 setopt prompt_subst
 
 # Functions
+
+# Rebuild the full nix-darwin/nixos system configuration.
+# Usage: rebuild [hostname] [extra flags]
+# Defaults to $NIXHOST or the current hostname.
 rebuild() {
     local cmd=$([ "$(uname)" = "Darwin" ] && echo darwin-rebuild || echo nixos-rebuild)
     local flake
@@ -32,6 +36,16 @@ rebuild() {
     sudo $cmd switch --flake "${CONFIG}/#${flake}" $@
 }
 
+# Build and add a flake package to the user profile.
+# Useful for iterating on a package (e.g. neovim) without a full system rebuild.
+# Usage: use <package>  (e.g. use neovim)
+use() {
+    nix profile add "${CONFIG}/#$1"
+}
+
+# Enter a nix dev shell. Looks for a .nix file in $CONFIG/nix/shells first,
+# then falls back to `nix develop`. Lists available shells on failure.
+# Usage: dev <shell>
 dev() {
     local shellFilePath="${CONFIG}/nix/shells/$1.nix"
     if [ -f "$shellFilePath" ]; then
@@ -44,6 +58,8 @@ dev() {
     fi
 }
 
+# Open yazi and cd into the directory yazi exits to.
+# Usage: yz [yazi args]
 yz() {
     local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
     yazi "$@" --cwd-file="$tmp"
@@ -53,6 +69,8 @@ yz() {
     rm -f -- "$tmp"
 }
 
+# Fuzzy cd using fd + fzf, ignoring common noisy directories.
+# Usage: fcd
 fcd() {
     local ignored=( .cache .colima .docker .git Library )
     local args=""
@@ -62,11 +80,13 @@ fcd() {
     eval "cd \$(fd --hidden $args --type d | fzf || pwd)"
 }
 
+# ZLE widget wrapper for fcd (bound to ^F).
 fcd_widget() {
     zle -I
     fcd
 }
 
+# Updates $GIT_BRANCH for use in the prompt. Runs on chpwd and precmd.
 _update_git_branch() {
     local branch
     branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
@@ -75,14 +95,19 @@ _update_git_branch() {
         || GIT_BRANCH=""
 }
 
+# Rebuilds PS1 with current path, git branch, and last exit code color.
 _update_prompt() {
     PS1="%F{blue}%~ %f${GIT_BRANCH}%(?.%F{green}.%F{red})%#%f "
 }
 
+# Run a command detached from the terminal (nohup, silent).
+# Usage: nh <command> [args]
 nh() {
     nohup $@ &> /dev/null &
 }
 
+# Open a PDF with zathura detached from the terminal.
+# Usage: zread <file>
 zread() {
     nh zathura $@
 }
