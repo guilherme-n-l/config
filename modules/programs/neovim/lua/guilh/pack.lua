@@ -14,17 +14,19 @@ add(Gh({
     "nvim-lua/plenary.nvim",
     "ibhagwan/fzf-lua",
     "theprimeagen/harpoon",
+    "stevearc/oil.nvim", -- depends: nvim-tree/nvim-web-devicons
 
     -- LSP / Language Support
     "neovim/nvim-lspconfig",
     "nvim-treesitter/nvim-treesitter",
 
     -- AI
-    "coder/claudecode.nvim", -- depends: snacks.nvim
+    "coder/claudecode.nvim", -- depends: folke/snacks.nvim
 }) --[[@as (string|vim.pack.Spec)[] ]])
 
 Setup_packages({
     "mini.pick",
+    "oil",
     "claudecode",
     ["lualine"] = { options = { theme = "auto" } },
     ["Comment"] = {

@@ -195,6 +195,7 @@ Set_keymaps({
         -- Easy clipboard access
         { "<leader>y",  '"+y<CR>' },
         { "<leader>d",  '"+d<CR>' },
+        { "<leader>pv", "<cmd>Oil<cr>",    desc = "Open current directory" },
         { "<leader>pf", pick("files"),     desc = "Fuzzy find files" },
         { "<leader>pg", pick("grep_live"), desc = "Fuzzy find strings recursively" },
         { "<leader>ph", pick("help"),      desc = "Fuzzy find help" },
