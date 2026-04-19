@@ -77,6 +77,7 @@ in
       "iterm2"
       "keepassxc"
       "stolendata-mpv"
+      "macfuse"
 
       # Design
       "gimp"
