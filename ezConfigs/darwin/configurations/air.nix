@@ -70,7 +70,6 @@ in
 
       # Productivity
       "libreoffice"
-      "claude-code"
       "omnissa-horizon-client"
 
       # Utils
@@ -84,6 +83,10 @@ in
 
       # Fun
       "spotify"
+
+      # AI
+      "claude-code"
+      "codex"
     ];
     cargoPackages = [
       "ripgrep"

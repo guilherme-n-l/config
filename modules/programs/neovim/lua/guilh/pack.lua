@@ -15,6 +15,8 @@ add(Gh({
     "ibhagwan/fzf-lua",
     "theprimeagen/harpoon",
     "stevearc/oil.nvim", -- depends: nvim-tree/nvim-web-devicons
+    "lambdalisue/vim-suda.git",
+    "tpope/vim-fugitive",
 
     -- LSP / Language Support
     "neovim/nvim-lspconfig",
@@ -22,6 +24,7 @@ add(Gh({
 
     -- AI
     "coder/claudecode.nvim", -- depends: folke/snacks.nvim
+    "github/copilot.vim"
 }) --[[@as (string|vim.pack.Spec)[] ]])
 
 Setup_packages({
