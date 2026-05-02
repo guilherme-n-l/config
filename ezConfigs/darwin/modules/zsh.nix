@@ -6,7 +6,9 @@
   ...
 }:
 let
-  mypkgs = inputs.self.packages.${pkgs.stdenv.hostPlatform.system};
+  system = pkgs.stdenv.hostPlatform.system;
+  mypkgs = inputs.self.packages.${system};
+
   brewShellEnv = ''
     if [[ -x /opt/homebrew/bin/brew ]]; then
       eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -14,13 +16,10 @@ let
       eval "$(/usr/local/bin/brew shellenv)"
     fi
   '';
-  zsh =
-    if config.darwin.zsh.homebrew then
-      (mypkgs.zsh.passthru.configuration.apply {
-        zshrc.content = brewShellEnv;
-      }).wrapper
-    else
-      mypkgs.zsh;
+
+  zsh = (mypkgs.zsh.passthru.configuration.apply {
+    zshrc.content = lib.optionalString config.darwin.zsh.homebrew brewShellEnv;
+  }).wrapper;
 in
 {
   options.darwin.zsh = {
@@ -35,6 +34,6 @@ in
 
   config = {
     programs.zsh.enable = true;
-    environment.systemPackages = [ zsh ];
+    environment.systemPackages = [ config.darwin.zsh.package ];
   };
 }
