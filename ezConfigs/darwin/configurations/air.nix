@@ -75,7 +75,6 @@ in
       # Utils
       "iterm2"
       "keepassxc"
-      "stolendata-mpv"
       "macfuse"
 
       # Design
