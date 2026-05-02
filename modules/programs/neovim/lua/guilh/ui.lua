@@ -2,6 +2,8 @@ local M = {}
 
 function M.transparent_bg()
     for _, hl in ipairs({
+        "Normal",
+        "NormalNC",
         "LineNr",
         "LineNrAbove",
         "LineNrBelow",
