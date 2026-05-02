@@ -24,29 +24,70 @@ setopt hist_find_no_dups
 setopt prompt_subst
 
 # Functions
+_rebuild_profile_packages() {
+	local host="${1:-${NIXHOST:-$(hostname -s)}}"
+	local configurationAttr="$([[ "$(uname)" = "Darwin" ]] && echo darwinConfigurations || echo nixosConfigurations)"
+	CONFIGURATION_ATTR="$configurationAttr" REBUILD_HOST="$host" nix eval --raw --impure \
+		--expr 'let
+		  configPath = builtins.getEnv "CONFIG";
+		  configurationAttr = builtins.getEnv "CONFIGURATION_ATTR";
+		  host = builtins.getEnv "REBUILD_HOST";
+		  flake = builtins.getFlake ("git+file://" + configPath);
+		  configuration = builtins.getAttr host (builtins.getAttr configurationAttr flake);
+		  system = configuration.pkgs.stdenv.hostPlatform.system;
+		  selfPackages = flake.packages.${system};
+		  systemOutPaths = map (package: toString package) configuration.config.environment.systemPackages;
+		  packageNames = builtins.attrNames selfPackages;
+		  packages = builtins.filter (name: builtins.elem (toString selfPackages.${name}) systemOutPaths) packageNames;
+		in builtins.concatStringsSep "\n" packages'
+}
 
 # Rebuild the full nix-darwin/nixos system configuration.
 # Usage: rebuild [hostname] [extra flags]
 # Defaults to $NIXHOST or the current hostname.
 rebuild() {
 	local cmd
-	cmd=$([[ "$(uname)" = "Darwin" ]] && echo darwin-rebuild || echo nixos-rebuild)
-	local flake
+	if [[ "$(uname)" = "Darwin" ]]; then
+		cmd="darwin-rebuild"
+	else
+		cmd="nixos-rebuild"
+	fi
+	local host
+	local package
 	if [[ -n "$1" ]]; then
-		flake="$1"
+		host="$1"
 		shift
 	else
-		flake="${NIXHOST:-$(hostname -s)}"
+		host="${NIXHOST:-$(hostname -s)}"
 	fi
-	sudo "$cmd" switch --flake "${CONFIG}/#${flake}" "$@"
+
+	local packageNames
+	local packages
+	if packageNames=$(_rebuild_profile_packages "$host"); then
+		packages=("${(@f)packageNames}")
+		for package in "${packages[@]}"; do
+			nouse "$package" &>/dev/null || true
+		done
+	fi
+
+	sudo "$cmd" switch --flake "${CONFIG}/#${host}" "$@"
 }
+
+# Remove a package from the user profile.
+# Usage: nouse <package>  (e.g. nouse neovim)
+nouse() {
+	local package="${1:?Usage: nouse <package>}"
+	nix profile remove "$package"
 }
 
 # Build and add a flake package to the user profile.
 # Useful for iterating on a package (e.g. neovim) without a full system rebuild.
 # Usage: use <package>  (e.g. use neovim)
 use() {
-    nix profile add "${CONFIG}/#$1"
+	local package="${1:?Usage: use <package>}"
+	local flake="${CONFIG}/#$package"
+	nouse "$package"
+	nix profile add "$flake"
 }
 
 # Enter a nix dev shell. Looks for a .nix file in $CONFIG/nix/shells first,
