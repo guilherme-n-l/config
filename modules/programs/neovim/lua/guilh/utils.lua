@@ -1,4 +1,5 @@
 unpack = table.unpack or unpack
+local user_command = vim.api.nvim_create_user_command
 
 --- Function to return the first element of a table.
 ---@param tbl table The table from which to extract the first element.
@@ -101,6 +102,48 @@ function Setup_packages(tbl)
             require(k).setup(v)
         end
     end
+end
+
+--- Defines legacy lspconfig commands for Nvim 0.12's native `:lsp` commands.
+function Setup_legacy_lsp_commands()
+    local function lsp_cmd(subcommand, info)
+        local bang = info.bang and "!" or ""
+        local args = info.args ~= "" and (" " .. info.args) or ""
+        vim.cmd(("lsp %s%s%s"):format(subcommand, bang, args))
+    end
+
+    user_command("LspInfo", "checkhealth vim.lsp", {
+        desc = "Alias to :checkhealth vim.lsp",
+    })
+
+    user_command("LspLog", function()
+        vim.cmd.tabnew(vim.lsp.log.get_filename())
+    end, {
+        desc = "Open the Nvim LSP client log",
+    })
+
+    user_command("LspStart", function(info)
+        lsp_cmd("enable", info)
+    end, {
+        desc = "Alias to :lsp enable",
+        nargs = "*",
+    })
+
+    user_command("LspStop", function(info)
+        lsp_cmd("disable", info)
+    end, {
+        bang = true,
+        desc = "Alias to :lsp disable",
+        nargs = "*",
+    })
+
+    user_command("LspRestart", function(info)
+        lsp_cmd("restart", info)
+    end, {
+        bang = true,
+        desc = "Alias to :lsp restart",
+        nargs = "*",
+    })
 end
 
 --- Sets key mappings from a provided table.
