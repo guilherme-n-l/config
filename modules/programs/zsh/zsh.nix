@@ -7,9 +7,6 @@
         (self.inputs.wrappers.wrappers.zsh.apply {
           inherit pkgs;
           zdotdir = ./.;
-          zshrc.content = ''
-            source ${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-          '';
           extraPackages = with pkgs; [
             # Utils
             git
@@ -38,6 +35,9 @@
             shellcheck
             shfmt
           ];
+          env.FZF_KEY_BINDINGS = "${pkgs.fzf}/share/fzf/key-bindings.zsh";
+          env.ZSH_FZF_TAB_PLUGIN = "${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh";
+          env.ZSH_SYNTAX_HIGHLIGHTING_PLUGIN = "${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh";
         }).wrapper;
     };
 }
