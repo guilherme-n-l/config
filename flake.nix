@@ -11,6 +11,8 @@
     import-tree.url = "github:vic/import-tree";
 
     wrappers.url = "github:BirdeeHub/nix-wrapper-modules";
+
+    nixgl.url = "github:nix-community/nixGL";
   };
   outputs =
     inputs:
