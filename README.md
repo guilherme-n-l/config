@@ -9,4 +9,5 @@ github:guilherme-n-l/config#zsh
 github:guilherme-n-l/config#ripgrep
 github:guilherme-n-l/config#yazi
 github:guilherme-n-l/config#mpv
+github:guilherme-n-l/config#wezterm # Uses NixGL
 ```
