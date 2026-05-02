@@ -88,9 +88,6 @@ in
       "claude-code"
       "codex"
     ];
-    cargoPackages = [
-      "ripgrep"
-    ];
   };
 
   darwin.zsh.homebrew = true;

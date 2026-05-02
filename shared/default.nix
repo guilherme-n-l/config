@@ -1,6 +1,7 @@
 { inputs, pkgs, ... }:
 let
-  mypkgs = inputs.self.packages.${pkgs.stdenv.hostPlatform.system};
+  system = pkgs.stdenv.hostPlatform.system;
+  mypkgs = inputs.self.packages.${system};
 in
 {
   packages =
