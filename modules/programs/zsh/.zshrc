@@ -135,7 +135,7 @@ _update_git_branch() {
 
 # Rebuilds PS1 with current path, git branch, and last exit code color.
 _update_prompt() {
-	PS1="%F{blue}%~ %f${GIT_BRANCH}%(?.%F{green}.%F{red})%#%f "
+    PS1="%F{yellow}%m:%f%F{blue}%~ %f${GIT_BRANCH}%(?.%F{green}.%F{red})%#%f "
 }
 
 # Run a command detached from the terminal (nohup, silent).
