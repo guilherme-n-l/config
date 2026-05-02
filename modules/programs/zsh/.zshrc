@@ -3,6 +3,7 @@
 export CONFIG="$HOME/config"
 export EDITOR="nvim"
 export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
+export NIXHOST="${NIXHOST:-${HOST:-$(hostname -s)}}"
 
 # PATH
 export PATH="$HOME/.npm/bin:$HOME/.go/bin:$HOME/.bun/bin:$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
@@ -25,7 +26,7 @@ setopt prompt_subst
 
 # Functions
 _rebuild_profile_packages() {
-	local host="${1:-${NIXHOST:-$(hostname -s)}}"
+	local host="${1:-$NIXHOST}"
 	local configurationAttr="$([[ "$(uname)" = "Darwin" ]] && echo darwinConfigurations || echo nixosConfigurations)"
 	CONFIGURATION_ATTR="$configurationAttr" REBUILD_HOST="$host" nix eval --raw --impure \
 		--expr 'let
@@ -46,24 +47,12 @@ _rebuild_profile_packages() {
 # Usage: rebuild [hostname] [extra flags]
 # Defaults to $NIXHOST or the current hostname.
 rebuild() {
-	local cmd
-	if [[ "$(uname)" = "Darwin" ]]; then
-		cmd="darwin-rebuild"
-	else
-		cmd="nixos-rebuild"
-	fi
-	local host
+	local cmd="$([[ "$(uname)" = "Darwin" ]] && echo "darwin" || echo "nixos")-rebuild"
+    shift 2>/dev/null || true
 	local package
-	if [[ -n "$1" ]]; then
-		host="$1"
-		shift
-	else
-		host="${NIXHOST:-$(hostname -s)}"
-	fi
-
 	local packageNames
 	local packages
-	if packageNames=$(_rebuild_profile_packages "$host"); then
+	if packageNames=$(_rebuild_profile_packages); then
 		packages=("${(@f)packageNames}")
 		for package in "${packages[@]}"; do
 			nouse "$package" &>/dev/null || true
