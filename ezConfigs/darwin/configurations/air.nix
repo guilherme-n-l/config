@@ -86,6 +86,7 @@ in
       # AI
       "claude-code"
       "codex"
+      "antigravity"
     ];
   };
 
