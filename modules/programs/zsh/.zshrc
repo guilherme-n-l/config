@@ -26,21 +26,12 @@ setopt prompt_subst
 
 # Functions
 _rebuild_profile_packages() {
-	local host="${1:-$NIXHOST}"
-	local configurationAttr="$([[ "$(uname)" = "Darwin" ]] && echo darwinConfigurations || echo nixosConfigurations)"
-	CONFIGURATION_ATTR="$configurationAttr" REBUILD_HOST="$host" nix eval --raw --impure \
+	REBUILD_HOST="${1:-$NIXHOST}" nix eval --raw --impure \
 		--expr 'let
 		  configPath = builtins.getEnv "CONFIG";
-		  configurationAttr = builtins.getEnv "CONFIGURATION_ATTR";
 		  host = builtins.getEnv "REBUILD_HOST";
 		  flake = builtins.getFlake ("git+file://" + configPath);
-		  configuration = builtins.getAttr host (builtins.getAttr configurationAttr flake);
-		  system = configuration.pkgs.stdenv.hostPlatform.system;
-		  selfPackages = flake.packages.${system};
-		  systemOutPaths = map (package: toString package) configuration.config.environment.systemPackages;
-		  packageNames = builtins.attrNames selfPackages;
-		  packages = builtins.filter (name: builtins.elem (toString selfPackages.${name}) systemOutPaths) packageNames;
-		in builtins.concatStringsSep "\n" packages'
+		in builtins.concatStringsSep "\n" (flake.lib.hostProfilePackageNames host)'
 }
 
 # Rebuild the full nix-darwin/nixos system configuration.
@@ -48,35 +39,48 @@ _rebuild_profile_packages() {
 # Defaults to $NIXHOST or the current hostname.
 rebuild() {
 	local cmd="$([[ "$(uname)" = "Darwin" ]] && echo "darwin" || echo "nixos")-rebuild"
-    shift 2>/dev/null || true
 	local package
 	local packageNames
 	local packages
-	if packageNames=$(_rebuild_profile_packages); then
+	local host="$([[ "${1:-$NIXHOST}" = "--" ]] && echo "$NIXHOST" || echo "$1")"
+	shift 2>/dev/null || true
+
+	if packageNames=$(_rebuild_profile_packages "$host"); then
 		packages=("${(@f)packageNames}")
-		for package in "${packages[@]}"; do
-			nouse "$package" &>/dev/null || true
-		done
+		((${#packages[@]})) && nouse "${packages[@]}" &>/dev/null || true
 	fi
 
 	sudo "$cmd" switch --flake "${CONFIG}/#${host}" "$@"
 }
 
-# Remove a package from the user profile.
-# Usage: nouse <package>  (e.g. nouse neovim)
+# Remove packages from the user profile.
+# Usage: nouse <package>...  (e.g. nouse neovim mpv)
 nouse() {
-	local package="${1:?Usage: nouse <package>}"
-	nix profile remove "$package"
+	(($#)) || {
+		echo "Usage: nouse <package>..." >&2
+		return 2
+	}
+
+	nix profile remove "$@"
 }
 
-# Build and add a flake package to the user profile.
+# Build and add flake packages to the user profile.
 # Useful for iterating on a package (e.g. neovim) without a full system rebuild.
-# Usage: use <package>  (e.g. use neovim)
+# Usage: use <package>...  (e.g. use neovim mpv)
 use() {
-	local package="${1:?Usage: use <package>}"
-	local flake="${CONFIG}/#$package"
-	nouse "$package"
-	nix profile add "$flake"
+	(($#)) || {
+		echo "Usage: use <package>..." >&2
+		return 2
+	}
+
+	local package
+	local flakes=()
+	for package in "$@"; do
+		flakes+=("${CONFIG}/#$package")
+	done
+
+	nouse "$@" &>/dev/null || true
+	nix profile add "${flakes[@]}"
 }
 
 # Enter a nix dev shell. Looks for a .nix file in $CONFIG/nix/shells first,
@@ -135,7 +139,7 @@ _update_git_branch() {
 
 # Rebuilds PS1 with current path, git branch, and last exit code color.
 _update_prompt() {
-    PS1="%F{yellow}%m:%f%F{blue}%~ %f${GIT_BRANCH}%(?.%F{green}.%F{red})%#%f "
+	PS1="%F{yellow}%m:%f%F{blue}%~ %f${GIT_BRANCH}%(?.%F{green}.%F{red})%#%f "
 }
 
 # Run a command detached from the terminal (nohup, silent).
