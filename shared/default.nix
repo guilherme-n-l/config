@@ -16,7 +16,6 @@ in
     ])
     ++ (with mypkgs; [
       neovim
-      zsh
       mpv
     ]);
 }

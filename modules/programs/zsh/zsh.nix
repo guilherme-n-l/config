@@ -7,9 +7,10 @@
     in
     {
       packages.zsh =
-        (self.inputs.wrappers.wrappers.zsh.apply {
-          inherit pkgs;
-          zdotdir = ./.;
+        (self.inputs.wrappers.wrappers.zsh.apply [
+          {
+            inherit pkgs;
+            zdotdir = ./.;
           extraPackages =
             (with pkgs; [
               # Utils
@@ -44,6 +45,17 @@
           env.FZF_KEY_BINDINGS = "${pkgs.fzf}/share/fzf/key-bindings.zsh";
           env.ZSH_FZF_TAB_PLUGIN = "${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh";
           env.ZSH_SYNTAX_HIGHLIGHTING_PLUGIN = "${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh";
-        }).wrapper;
+          }
+          ({ lib, config, ... }: {
+            options.homebrew = lib.mkEnableOption "homebrew shell env";
+            config.zshrc.content = lib.optionalString config.homebrew ''
+              if [[ -x /opt/homebrew/bin/brew ]]; then
+                eval "$(/opt/homebrew/bin/brew shellenv)"
+              elif [[ -x /usr/local/bin/brew ]]; then
+                eval "$(/usr/local/bin/brew shellenv)"
+              fi
+            '';
+          })
+        ]).wrapper;
     };
 }

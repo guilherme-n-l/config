@@ -9,16 +9,8 @@ let
   system = pkgs.stdenv.hostPlatform.system;
   mypkgs = inputs.self.packages.${system};
 
-  brewShellEnv = ''
-    if [[ -x /opt/homebrew/bin/brew ]]; then
-      eval "$(/opt/homebrew/bin/brew shellenv)"
-    elif [[ -x /usr/local/bin/brew ]]; then
-      eval "$(/usr/local/bin/brew shellenv)"
-    fi
-  '';
-
   zsh = (mypkgs.zsh.passthru.configuration.apply {
-    zshrc.content = lib.optionalString config.darwin.zsh.homebrew brewShellEnv;
+    homebrew = config.darwin.zsh.homebrew;
   }).wrapper;
 in
 {
