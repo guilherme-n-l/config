@@ -6,7 +6,16 @@ export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 export NIXHOST="${NIXHOST:-${HOST:-$(hostname -s)}}"
 
 # PATH
-export PATH="$HOME/.npm/bin:$HOME/.go/bin:$HOME/.bun/bin:$HOME/.cargo/bin:$HOME/.local/bin:$PATH"
+path=(
+    "$HOME/.nix-profile/bin"
+    "/nix/var/nix/profiles/default/bin"
+    "$HOME/.npm/bin"
+    "$HOME/.go/bin"
+    "$HOME/.bun/bin"
+    "$HOME/.cargo/bin"
+    "$HOME/.local/bin"
+    $path
+)
 
 # History
 HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
