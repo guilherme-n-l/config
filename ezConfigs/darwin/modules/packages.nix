@@ -1,4 +1,9 @@
-{ shared, pkgs, inputs, ... }:
+{
+  shared,
+  pkgs,
+  inputs,
+  ...
+}:
 let
   sharedEnv = shared { inherit pkgs inputs; };
 in

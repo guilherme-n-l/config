@@ -1,3 +1,4 @@
+{ self, ... }:
 {
   config = {
     systems = [
@@ -6,5 +7,18 @@
       "aarch64-linux"
       "aarch64-darwin"
     ];
+
+    perSystem =
+      { pkgs, system, ... }:
+      {
+        _module.args.wrapperPkgs = import self.inputs.nixpkgs {
+          inherit system;
+          config.allowUnfreePredicate =
+            pkg:
+            builtins.elem (pkgs.lib.getName pkg) [
+              "replace"
+            ];
+        };
+      };
   };
 }

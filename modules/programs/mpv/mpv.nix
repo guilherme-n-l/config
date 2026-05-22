@@ -1,9 +1,9 @@
 { self, ... }:
 {
   perSystem =
-    { pkgs, ... }:
+    { wrapperPkgs, ... }:
     let
-      mpv = self.inputs.wrappers.wrappers.mpv.apply { inherit pkgs; };
+      mpv = self.inputs.wrappers.wrappers.mpv.apply { pkgs = wrapperPkgs; };
     in
     {
       packages.mpv = mpv.wrap {

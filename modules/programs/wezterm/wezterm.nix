@@ -4,6 +4,7 @@
     {
       pkgs,
       inputs',
+      wrapperPkgs,
       ...
     }:
     {
@@ -12,30 +13,39 @@
           nixgl = inputs'.nixgl.packages;
           wezterm =
             (self.inputs.wrappers.wrappers.wezterm.apply {
-              inherit pkgs;
+              pkgs = wrapperPkgs;
               "wezterm.lua".path = ./wezterm.lua;
               luaInfo.configDir = "${placeholder "out"}/wezterm-config";
               constructFiles =
                 let
-                  mkEntries = dir:
+                  mkEntries =
+                    dir:
                     let
-                      files = builtins.filter
-                        (f: builtins.match ".*\\.lua" f != null)
-                        (builtins.attrNames (builtins.readDir ./${dir}));
+                      files = builtins.filter (f: builtins.match ".*\\.lua" f != null) (
+                        builtins.attrNames (builtins.readDir ./${dir})
+                      );
                     in
-                    builtins.listToAttrs (map (f: {
-                      name = "${dir}/${f}";
-                      value = {
-                        relPath = "wezterm-config/${dir}/${f}";
-                        content = builtins.readFile ./${dir}/${f};
-                      };
-                    }) files);
+                    builtins.listToAttrs (
+                      map (f: {
+                        name = "${dir}/${f}";
+                        value = {
+                          relPath = "wezterm-config/${dir}/${f}";
+                          content = builtins.readFile ./${dir}/${f};
+                        };
+                      }) files
+                    );
                 in
-                builtins.foldl' (acc: dir: acc // mkEntries dir) { } [ "config" "utils" ];
+                builtins.foldl' (acc: dir: acc // mkEntries dir) { } [
+                  "config"
+                  "utils"
+                ];
             }).wrapper;
         in
-        pkgs.writeShellScriptBin "wezterm" ''
-          exec ${nixgl.nixGLIntel}/bin/nixGLIntel ${wezterm}/bin/wezterm "$@"
-        '';
+        if pkgs.stdenv.hostPlatform.isLinux then
+          pkgs.writeShellScriptBin "wezterm" ''
+            exec ${nixgl.nixGLIntel}/bin/nixGLIntel ${wezterm}/bin/wezterm "$@"
+          ''
+        else
+          wezterm;
     };
 }

@@ -1,7 +1,12 @@
 { self, ... }:
 {
   perSystem =
-    { pkgs, self', ... }:
+    {
+      pkgs,
+      self',
+      wrapperPkgs,
+      ...
+    }:
     let
       mypkgs = self'.packages;
     in
@@ -9,53 +14,56 @@
       packages.zsh =
         (self.inputs.wrappers.wrappers.zsh.apply [
           {
-            inherit pkgs;
+            pkgs = wrapperPkgs;
             zdotdir = ./.;
-          extraPackages =
-            (with pkgs; [
-              # Utils
-              git
-              tealdeer
-              lazygit
+            extraPackages =
+              (with pkgs; [
+                # Utils
+                git
+                tealdeer
+                lazygit
 
-              # Media
-              curl
-              wget
-              ffmpeg
+                # Media
+                curl
+                wget
+                ffmpeg
 
-              # Text
-              gnugrep
-              glow
+                # Text
+                gnugrep
+                glow
 
-              # Nav
-              tree
-              fd
-              fzf
-              zsh-fzf-tab
-              zoxide
+                # Nav
+                tree
+                fd
+                fzf
+                zsh-fzf-tab
+                zoxide
 
-              # LSP / Lint / Format
-              shellcheck
-              shfmt
-            ])
-            ++ (with mypkgs; [
-              yazi
-              ripgrep
-            ]);
-          env.FZF_KEY_BINDINGS = "${pkgs.fzf}/share/fzf/key-bindings.zsh";
-          env.ZSH_FZF_TAB_PLUGIN = "${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh";
-          env.ZSH_SYNTAX_HIGHLIGHTING_PLUGIN = "${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh";
+                # LSP / Lint / Format
+                shellcheck
+                shfmt
+              ])
+              ++ (with mypkgs; [
+                yazi
+                ripgrep
+              ]);
+            env.FZF_KEY_BINDINGS = "${pkgs.fzf}/share/fzf/key-bindings.zsh";
+            env.ZSH_FZF_TAB_PLUGIN = "${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh";
+            env.ZSH_SYNTAX_HIGHLIGHTING_PLUGIN = "${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh";
           }
-          ({ lib, config, ... }: {
-            options.homebrew = lib.mkEnableOption "homebrew shell env";
-            config.zshrc.content = lib.optionalString config.homebrew ''
-              if [[ -x /opt/homebrew/bin/brew ]]; then
-                eval "$(/opt/homebrew/bin/brew shellenv)"
-              elif [[ -x /usr/local/bin/brew ]]; then
-                eval "$(/usr/local/bin/brew shellenv)"
-              fi
-            '';
-          })
+          (
+            { lib, config, ... }:
+            {
+              options.homebrew = lib.mkEnableOption "homebrew shell env";
+              config.zshrc.content = lib.optionalString config.homebrew ''
+                if [[ -x /opt/homebrew/bin/brew ]]; then
+                  eval "$(/opt/homebrew/bin/brew shellenv)"
+                elif [[ -x /usr/local/bin/brew ]]; then
+                  eval "$(/usr/local/bin/brew shellenv)"
+                fi
+              '';
+            }
+          )
         ]).wrapper;
     };
 }

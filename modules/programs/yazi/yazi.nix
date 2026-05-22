@@ -1,7 +1,11 @@
 { self, ... }:
 {
   perSystem =
-    { pkgs, ... }:
+    {
+      pkgs,
+      wrapperPkgs,
+      ...
+    }:
     let
       kanagawa-dragon = pkgs.fetchFromGitHub {
         owner = "marcosvnmelo";
@@ -13,7 +17,7 @@
     {
       packages.yazi =
         (self.inputs.wrappers.wrappers.yazi.apply {
-          inherit pkgs;
+          pkgs = wrapperPkgs;
           settings = {
             keymap.mgr.prepend_keymap = [
               {

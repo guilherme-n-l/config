@@ -6,12 +6,13 @@
   perSystem =
     {
       pkgs,
+      wrapperPkgs,
       ...
     }:
     {
       packages.neovim =
         (self.inputs.wrappers.wrappers.neovim.apply {
-          inherit pkgs;
+          pkgs = wrapperPkgs;
           extraPackages = with pkgs; [
             bash-language-server
             shellcheck

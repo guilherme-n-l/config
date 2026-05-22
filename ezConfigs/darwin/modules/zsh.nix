@@ -9,9 +9,10 @@ let
   system = pkgs.stdenv.hostPlatform.system;
   mypkgs = inputs.self.packages.${system};
 
-  zsh = (mypkgs.zsh.passthru.configuration.apply {
-    homebrew = config.darwin.zsh.homebrew;
-  }).wrapper;
+  zsh =
+    (mypkgs.zsh.passthru.configuration.apply {
+      homebrew = config.darwin.zsh.homebrew;
+    }).wrapper;
 in
 {
   options.darwin.zsh = {

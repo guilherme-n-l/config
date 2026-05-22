@@ -1,10 +1,14 @@
 { self, ... }:
 {
   perSystem =
-    { pkgs, ... }:
+    {
+      pkgs,
+      wrapperPkgs,
+      ...
+    }:
     {
       packages.ripgrep = self.inputs.wrappers.lib.wrapPackage {
-        inherit pkgs;
+        pkgs = wrapperPkgs;
         package = pkgs.ripgrep;
         flags = {
           "--hidden" = true;
