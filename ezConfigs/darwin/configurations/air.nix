@@ -13,6 +13,7 @@ in
     zsh
     inputs
     fonts
+    automator
   ];
 
   system = {
@@ -44,6 +45,18 @@ in
         "com.apple.HIToolbox"."AppleFnUsageType" = 0; # Disable fn Lock
         "com.apple.dock"."show-recents" = false; # Disable recentes in dock
         "com.apple.finder"."CreateDesktop" = false; # Hide desktop icons
+        "pbs"."NSServicesStatus" = {
+          "(null) - Open Finder - runWorkflowAsService" = {
+            enabled_context_menu = true;
+            enabled_services_menu = true;
+            key_equivalent = "@e";
+          };
+          "(null) - Run Terminal - runWorkflowAsService" = {
+            enabled_context_menu = true;
+            enabled_services_menu = true;
+            key_equivalent = "@$t";
+          };
+        };
       };
     };
 
