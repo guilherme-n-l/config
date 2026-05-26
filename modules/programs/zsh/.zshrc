@@ -225,5 +225,7 @@ source "$(sed 's/\(.*\)\/bin.*/\1/' <(readlink -f "$(which fzf | head -n 1)"))/s
 # Evals
 eval "$(zoxide init "$(basename "$SHELL")")"
 
+[[ "$OSTYPE" == darwin* && ! -f ~/.hushlogin ]] && touch ~/.hushlogin
+
 # shellcheck disable=SC1091
 [[ -n "$ZSH_SYNTAX_HIGHLIGHTING_PLUGIN" ]] && source "$ZSH_SYNTAX_HIGHLIGHTING_PLUGIN"
