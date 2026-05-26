@@ -18,4 +18,8 @@ in
       neovim
       mpv
     ]);
+
+  fonts = with pkgs.nerd-fonts; [
+    fira-code
+  ];
 }

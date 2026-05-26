@@ -12,6 +12,7 @@ in
     homebrew
     zsh
     inputs
+    fonts
   ];
 
   system = {
@@ -90,6 +91,8 @@ in
       "antigravity"
     ];
   };
+
+  darwin.terminal = "iTerm";
 
   darwin.zsh.homebrew = true;
 
