@@ -11,6 +11,7 @@ in
     packages
     homebrew
     zsh
+    inputs
   ];
 
   system = {
