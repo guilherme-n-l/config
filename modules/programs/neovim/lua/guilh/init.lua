@@ -1,6 +1,7 @@
 require("guilh.utils")
 require("guilh.pack")
 require("guilh.lsps")
+require("guilh.functions")
 
 local o = vim.opt
 local g = vim.g
