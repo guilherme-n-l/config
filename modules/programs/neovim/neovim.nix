@@ -14,9 +14,8 @@
         (self.inputs.wrappers.wrappers.neovim.apply {
           pkgs = wrapperPkgs;
           extraPackages = with pkgs; [
-            bash-language-server
-            shellcheck
-            shfmt
+            lua-language-server
+            stylua
           ];
           settings.config_directory = ./.;
         }).wrapper;
