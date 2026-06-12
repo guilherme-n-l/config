@@ -31,6 +31,9 @@ o.undofile = true
 o.hlsearch = false
 o.incsearch = true
 
+-- Project-local config
+o.exrc = true
+
 -- Menus
 o.winborder = "rounded"
 o.completeopt = { "menuone", "noselect", "popup" }

@@ -32,6 +32,7 @@ Setup_packages({
     "mini.pick",
     "oil",
     "claudecode",
+    ["nvim-treesitter"] = { highlight = { enable = true } },
     ["lualine"] = { options = { theme = "auto" } },
     ["Comment"] = {
         padding = true,
@@ -82,3 +83,4 @@ Setup_packages({
         },
     },
 })
+
