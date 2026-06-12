@@ -108,6 +108,71 @@ dev() {
 	fi
 }
 
+# Run a command inside a nix dev shell without entering it. With `-i <shell>`
+# the shell is resolved like `dev` (a $CONFIG/nix/shells/<shell>.nix file
+# first, then a flake `nix develop` target); without it, the current project's
+# default flake devShell is used. The shell's shellHook is sourced silently so
+# its aliases and functions are usable in the inline command without leaking
+# whatever the hook prints on entry.
+# Usage: devrun [-i <shell>] <command> [args...]
+devrun() {
+	local shell=""
+	local haveShell=0
+	if [[ "$1" == "-i" ]]; then
+		(($# >= 3)) || {
+			echo "Usage: devrun -i <shell> <command> [args...]" >&2
+			return 2
+		}
+		shell="$2"
+		haveShell=1
+		shift 2
+	else
+		(($# >= 1)) || {
+			echo "Usage: devrun [-i <shell>] <command> [args...]" >&2
+			return 2
+		}
+	fi
+
+	# Passed through the environment so the dev shell's bash can `eval` it after
+	# aliases are defined (alias expansion happens at parse time, so the command
+	# must be re-parsed via eval for shell aliases to take effect).
+	export DEVRUN_CMD="$*"
+
+	# Selector for `nix print-dev-env`: a local shells/<name>.nix file, a flake
+	# installable, or nothing (the current project's default devShell).
+	local -a sel
+	if ((haveShell)); then
+		local shellFilePath="${CONFIG}/nix/shells/$shell.nix"
+		if [[ -f "$shellFilePath" ]]; then
+			sel=(-f "$shellFilePath")
+		else
+			sel=("$shell")
+		fi
+	fi
+
+	# print-dev-env emits a bash script that sets up the env and runs the
+	# shellHook. eval it with output muted so the hook's entry chatter is
+	# swallowed while its aliases/functions survive, then run the command
+	# loudly. The capture's stderr is not redirected, so build progress and
+	# evaluation errors stay visible.
+	bash -c '
+		env="$(nix print-dev-env "$@")" || exit
+		eval "$env" >/dev/null 2>&1
+		shopt -s expand_aliases
+		eval "$DEVRUN_CMD"
+	' bash "${sel[@]}"
+	local ret=$?
+
+	if ((ret)) && ((haveShell)); then
+		local availableShells
+		availableShells=$(find "$CONFIG"/nix/shells -type f -name "*.nix" -exec basename {} .nix \; | awk '{print "\t" $0}')
+		echo -e "Available shells:\n$availableShells"
+	fi
+
+	unset DEVRUN_CMD
+	return $ret
+}
+
 # Open yazi and cd into the directory yazi exits to.
 # Usage: yz [yazi args]
 yz() {
