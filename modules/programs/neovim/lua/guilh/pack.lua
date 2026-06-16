@@ -25,8 +25,7 @@ add(Gh({
 
     -- AI
     "coder/claudecode.nvim", -- depends: folke/snacks.nvim
-    "github/copilot.vim"
-}) --[[@as (string|vim.pack.Spec)[] ]])
+}))
 
 Setup_packages({
     "mini.pick",
