@@ -114,13 +114,17 @@ dev() {
 # default flake devShell is used. The shell's shellHook is sourced silently so
 # its aliases and functions are usable in the inline command without leaking
 # whatever the hook prints on entry.
-# Usage: devrun [-i <shell>] <command> [args...]
-devrun() {
+# Usage: dr [-i <shell>] <command> [args...]
+dr() {
 	local shell=""
 	local haveShell=0
+	if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+		echo "Usage: dr [-i <shell>] <command> [args...]"
+		return 0
+	fi
 	if [[ "$1" == "-i" ]]; then
 		(($# >= 3)) || {
-			echo "Usage: devrun -i <shell> <command> [args...]" >&2
+			echo "Usage: dr -i <shell> <command> [args...]" >&2
 			return 2
 		}
 		shell="$2"
@@ -128,7 +132,7 @@ devrun() {
 		shift 2
 	else
 		(($# >= 1)) || {
-			echo "Usage: devrun [-i <shell>] <command> [args...]" >&2
+			echo "Usage: dr [-i <shell>] <command> [args...]" >&2
 			return 2
 		}
 	fi
@@ -171,6 +175,37 @@ devrun() {
 
 	unset DEVRUN_CMD
 	return $ret
+}
+
+# Run a command with one or more flake packages layered onto PATH via
+# `nix shell`, then exit. Unlike `dr` (which enters a single project devShell),
+# `ds` combines arbitrary packages. Targets precede `--`; everything after it is
+# the command and its args.
+# Usage: ds <pkg>... -- <command> [args...]
+ds() {
+	if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+		echo "Usage: ds <pkg>... -- <command> [args...]"
+		return 0
+	fi
+
+	local -a pkgs cmd
+	local sawSep=0
+	for arg in "$@"; do
+		if ((sawSep)); then
+			cmd+=("$arg")
+		elif [[ "$arg" == "--" ]]; then
+			sawSep=1
+		else
+			pkgs+=("$arg")
+		fi
+	done
+
+	if ((!sawSep)) || ((${#pkgs[@]} == 0)) || ((${#cmd[@]} == 0)); then
+		echo "Usage: ds <pkg>... -- <command> [args...]" >&2
+		return 2
+	fi
+
+	nix shell "${pkgs[@]}" -c "${cmd[@]}"
 }
 
 # Open yazi and cd into the directory yazi exits to.
