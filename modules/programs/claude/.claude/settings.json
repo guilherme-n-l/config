@@ -1,0 +1,7 @@
+{
+  "model": "opus",
+  "enabledPlugins": { },
+  "effortLevel": "xhigh",
+  "theme": "custom:kanagawa-dragon",
+  "tui": "fullscreen"
+}
