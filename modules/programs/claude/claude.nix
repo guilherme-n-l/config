@@ -19,18 +19,11 @@
           coreutils
           findutils
         ];
+        # Script lives in ./sync.sh so it stays shellcheck/shfmt-friendly and
+        # editable on its own; the wrapper just hands it the source tree.
         text = ''
-          src=${claudeConfig}
-          dest="''${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
-
-          echo "Syncing .claude config..."
-          while IFS= read -r -d "" rel; do
-            rel="''${rel#./}"
-            mkdir -p "$dest/$(dirname "$rel")"
-            cp -fL "$src/$rel" "$dest/$rel"
-            chmod u+w "$dest/$rel"
-            echo "  $rel"
-          done < <(cd "$src" && find . -mindepth 1 -type f -print0)
+          export SRC="${claudeConfig}"
+          ${builtins.readFile ./sync.sh}
         '';
       };
     };
