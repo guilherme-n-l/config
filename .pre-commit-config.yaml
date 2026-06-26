@@ -1,0 +1,49 @@
+# Format + lint nix, shell, lua, and markdown. Tools come from the flake
+# devShell (`nix develop`); the git hook is installed by its shellHook.
+default_stages: [pre-commit]
+
+repos:
+  - repo: local
+    hooks:
+      # ---- nix ----
+      - id: nixfmt
+        name: nixfmt
+        language: system
+        entry: nixfmt
+        types: [nix]
+
+      - id: deadnix
+        name: deadnix
+        language: system
+        entry: deadnix --edit --fail
+        types: [nix]
+
+      # ---- shell ----
+      - id: shfmt
+        name: shfmt
+        language: system
+        entry: shfmt -w -i 2 -ci
+        types: [shell]
+        exclude: (^|/)\.zshrc$
+
+      - id: shellcheck
+        name: shellcheck
+        language: system
+        entry: shellcheck --severity=warning
+        types: [shell]
+        exclude: (^|/)\.zshrc$
+
+      # ---- lua ----
+      - id: stylua
+        name: stylua
+        language: system
+        entry: stylua
+        types: [lua]
+
+      # ---- markdown ----
+      - id: prettier
+        name: prettier
+        language: system
+        entry: prettier --write
+        types_or: [markdown]
+        exclude: ^flake\.lock$
