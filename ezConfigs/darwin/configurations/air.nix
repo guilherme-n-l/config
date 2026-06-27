@@ -134,7 +134,7 @@ in
       "spotify"
 
       # AI
-      "claude-code"
+      "claude-code@latest"
       "codex"
     ];
   };
