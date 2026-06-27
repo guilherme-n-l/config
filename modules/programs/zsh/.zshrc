@@ -114,17 +114,19 @@ dev() {
 # default flake devShell is used. The shell's shellHook is sourced silently so
 # its aliases and functions are usable in the inline command without leaking
 # whatever the hook prints on entry.
-# Usage: dr [-i <shell>] <command> [args...]
+# Usage: dr [-i <shell> [-- <args...>]] [<command> [args...]]
+#   -i <shell>          enter a devShell (local .nix file or flake installable)
+#   -i <installable> -- run via `nix run` (passes args directly to the binary)
 dr() {
 	local shell=""
 	local haveShell=0
 	if [[ "$1" == "-h" || "$1" == "--help" ]]; then
-		echo "Usage: dr [-i <shell>] <command> [args...]"
+		echo "Usage: dr [-i <shell> [-- <args...>]] [<command> [args...]]"
 		return 0
 	fi
 	if [[ "$1" == "-i" ]]; then
-		(($# >= 3)) || {
-			echo "Usage: dr -i <shell> <command> [args...]" >&2
+		(($# >= 2)) || {
+			echo "Usage: dr -i <shell> [-- <args...> | <command> [args...]]" >&2
 			return 2
 		}
 		shell="$2"
@@ -135,6 +137,17 @@ dr() {
 			echo "Usage: dr [-i <shell>] <command> [args...]" >&2
 			return 2
 		}
+	fi
+
+	# When -i targets a flake installable and -- is the separator, use nix run
+	# so the package's default binary is invoked directly (like `nix run pkg -- args`).
+	if ((haveShell)) && [[ "$1" == "--" ]]; then
+		local shellFilePath="${CONFIG}/nix/shells/$shell.nix"
+		if [[ ! -f "$shellFilePath" ]]; then
+			shift
+			nix run "$shell" -- "$@"
+			return $?
+		fi
 	fi
 
 	# Passed through the environment so the dev shell's bash can `eval` it after
@@ -177,14 +190,15 @@ dr() {
 	return $ret
 }
 
-# Run a command with one or more flake packages layered onto PATH via
-# `nix shell`, then exit. Unlike `dr` (which enters a single project devShell),
-# `ds` combines arbitrary packages. Targets precede `--`; everything after it is
-# the command and its args.
-# Usage: ds <pkg>... -- <command> [args...]
+# Enter (or run a command in) a shell with one or more flake packages layered
+# onto PATH via `nix shell`. Unlike `dr` (which enters a single project
+# devShell), `ds` combines arbitrary packages. With no `--`, it drops into an
+# interactive shell, just like `nix shell nixpkgs#...`. Otherwise, everything
+# after `--` is the command and its args, run then exited.
+# Usage: ds <pkg>... [-- <command> [args...]]
 ds() {
 	if [[ "$1" == "-h" || "$1" == "--help" ]]; then
-		echo "Usage: ds <pkg>... -- <command> [args...]"
+		echo "Usage: ds <pkg>... [-- <command> [args...]]"
 		return 0
 	fi
 
@@ -200,12 +214,16 @@ ds() {
 		fi
 	done
 
-	if ((!sawSep)) || ((${#pkgs[@]} == 0)) || ((${#cmd[@]} == 0)); then
-		echo "Usage: ds <pkg>... -- <command> [args...]" >&2
+	if ((${#pkgs[@]} == 0)); then
+		echo "Usage: ds <pkg>... [-- <command> [args...]]" >&2
 		return 2
 	fi
 
-	nix shell "${pkgs[@]}" -c "${cmd[@]}"
+	if ((${#cmd[@]})); then
+		nix shell "${pkgs[@]}" -c "${cmd[@]}"
+	else
+		nix shell "${pkgs[@]}"
+	fi
 }
 
 # Open yazi and cd into the directory yazi exits to.
