@@ -30,7 +30,6 @@
 
                 # Text
                 gnugrep
-                glow
 
                 # Nav
                 tree
@@ -46,6 +45,7 @@
               ++ (with mypkgs; [
                 yazi
                 ripgrep
+                glow
               ]);
             env.FZF_KEY_BINDINGS = "${pkgs.fzf}/share/fzf/key-bindings.zsh";
             env.ZSH_FZF_TAB_PLUGIN = "${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh";
