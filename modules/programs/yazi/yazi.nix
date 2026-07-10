@@ -13,6 +13,16 @@
         rev = "b9541e84dc13265548e5bbb12c274b70b381b5cc";
         hash = "sha256-8gtpID6OdvYfRKT0Z2aypDdbBsavCBg2/pcXC7x3vTg=";
       };
+      lazygit = pkgs.fetchFromGitHub {
+        owner = "Lil-Dank";
+        repo = "lazygit.yazi";
+        rev = "e73fd74c2af3300368b33da1cfbab6a8649a41a8";
+        hash = "sha256-KPvjXjYE0W4Q2xZiVfMwZbtalHt0FbgLtEK4sUWbYOI=";
+      };
+      # Vendored locally: ripdrag is Linux-only, so drag.yazi needs a macOS
+      # branch (copy selection to a temp dir + reveal in Finder). Kept in-repo
+      # instead of pinning upstream so the patch is editable here.
+      drag = ./plugins/drag.yazi;
     in
     {
       packages.yazi =
@@ -45,19 +55,20 @@
                 run = "plugin drag";
                 desc = "Drag and drop utility";
               }
+              {
+                on = [
+                  "g"
+                  "i"
+                ];
+                run = "plugin lazygit";
+                desc = "Run lazygit";
+              }
             ];
             theme.flavor.dark = "kanagawa-dragon";
-
-            package = {
-              plugin.deps = [
-                {
-                  use = "Joao-Queiroga/drag";
-                  rev = "6b4bc40";
-                  hash = "efb404d68fdd43fd3dcc2fd0153a2c95";
-                }
-              ];
-              flavor.deps = [ ];
-            };
+          };
+          plugins = {
+            inherit drag;
+            lazygit = lazygit;
           };
           constructFiles = {
             kanagawa-dragon-flavor = {
