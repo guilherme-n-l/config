@@ -55,12 +55,9 @@
             { lib, config, ... }:
             {
               options.homebrew = lib.mkEnableOption "homebrew shell env";
-              config.zshrc.content = lib.optionalString config.homebrew ''
-                if [[ -x /opt/homebrew/bin/brew ]]; then
-                  eval "$(/opt/homebrew/bin/brew shellenv)"
-                elif [[ -x /usr/local/bin/brew ]]; then
-                  eval "$(/usr/local/bin/brew shellenv)"
-                fi
+              config.zshrc.content = lib.optionalString pkgs.stdenv.isDarwin ''
+                source ${config.zdotdir}/.darwin.sh
+                ${lib.optionalString config.homebrew "_eval_brew"}
               '';
             }
           )
