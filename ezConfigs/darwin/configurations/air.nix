@@ -117,10 +117,10 @@ in
     casks = [
       # Web
       "firefox"
+      "ungoogled-chromium"
 
       # Productivity
       "libreoffice"
-      "omnissa-horizon-client"
 
       # Utils
       "iterm2"
@@ -135,7 +135,6 @@ in
 
       # AI
       "claude-code@latest"
-      "codex"
     ];
   };
 
