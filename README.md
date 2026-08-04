@@ -1,6 +1,5 @@
 # Personal config
 
-
 ## Current available flake modules
 
 ```sh
@@ -12,4 +11,5 @@ github:guilherme-n-l/config#mpv
 github:guilherme-n-l/config#wezterm # Uses NixGL
 github:guilherme-n-l/config#claude-config # Syncs ~/.claude config
 github:guilherme-n-l/config#xkbd-custom # Use custom xkbd layout
+github:guilherme-n-l/config#flake-init # Personal flake scaffold
 ```
