@@ -1,6 +1,9 @@
-{ ... }:
+{ inputs, pkgs, ... }:
 let
-  bundle = ./Guilh.bundle;
+  # Generated from modules/utils/keyboard/layouts by KLFC. `nix run
+  # .#keyboard-darwin` installs the very same bundle to the very same path, so
+  # the declarative and imperative routes can never disagree.
+  bundle = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.keyboard-darwin-bundle;
   dest = "/Library/Keyboard Layouts/Guilh.bundle";
 in
 {

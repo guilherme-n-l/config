@@ -1,9 +1,8 @@
-#!/usr/bin/env bash
-# Injected into a writeShellApplication wrapper that sets `set -euo pipefail`
+# shellcheck shell=bash
 
 xkb="/usr/share/X11/xkb/symbols"
-BR_SECTION=${BR_SECTION:?must be set by the nix wrapper (path to the generated br 'custom' section)}
-US_SECTION=${US_SECTION:?must be set by the nix wrapper (path to the generated us 'custom' section)}
+BR_SECTION=${BR_SECTION:?set via runtimeEnv (path to the generated br 'custom' section)}
+US_SECTION=${US_SECTION:?set via runtimeEnv (path to the generated us 'custom' section)}
 if [ ! -d "$xkb" ]; then
   echo "error: $xkb not found — need an Xorg + xkeyboard-config system" >&2
   exit 1

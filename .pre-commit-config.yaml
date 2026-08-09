@@ -55,7 +55,7 @@ repos:
 
       # ---- markdown / json / yaml ----
       # prettier's json parser keeps `//` comments, which the klfc layout
-      # files under modules/programs/keyboard/layouts are allowed to use.
+      # files under modules/utils/keyboard/layouts are allowed to use.
       - id: prettier
         name: prettier
         language: system

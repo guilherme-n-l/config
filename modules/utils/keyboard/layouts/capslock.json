@@ -1,0 +1,10 @@
+{
+  "shiftlevels": ["None"],
+  "keys": [
+    {
+      "pos": "CapsLock",
+      "letters": ["Esc"],
+      "capslock": false
+    }
+  ]
+}

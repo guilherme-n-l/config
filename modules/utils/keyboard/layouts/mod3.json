@@ -1,0 +1,121 @@
+{
+  "shiftlevels": ["AltGr"],
+  "keys": [
+    {
+      "pos": "Q",
+      "letters": ["%"]
+    },
+    {
+      "pos": "W",
+      "letters": ["\\"]
+    },
+    {
+      "pos": "E",
+      "letters": ["|"]
+    },
+    {
+      "pos": "R",
+      "letters": ["/"]
+    },
+    {
+      "pos": "T",
+      "letters": ["<"]
+    },
+    {
+      "pos": "Y",
+      "letters": [">"]
+    },
+    {
+      "pos": "U",
+      "letters": ["{"]
+    },
+    {
+      "pos": "I",
+      "letters": ["}"]
+    },
+    {
+      "pos": "O",
+      "letters": ["["]
+    },
+    {
+      "pos": "P",
+      "letters": ["]"]
+    },
+    {
+      "pos": "A",
+      "letters": ["@"]
+    },
+    {
+      "pos": "S",
+      "letters": ["#"]
+    },
+    {
+      "pos": "D",
+      "letters": ["$"]
+    },
+    {
+      "pos": "F",
+      "letters": ["_"]
+    },
+    {
+      "pos": "G",
+      "letters": ["&"]
+    },
+    {
+      "pos": "H",
+      "letters": ["-"]
+    },
+    {
+      "pos": "J",
+      "letters": ["+"]
+    },
+    {
+      "pos": "K",
+      "letters": ["("]
+    },
+    {
+      "pos": "L",
+      "letters": [")"]
+    },
+    {
+      "pos": ";",
+      "letters": ["="]
+    },
+    {
+      "pos": "Z",
+      "letters": ["*"]
+    },
+    {
+      "pos": "X",
+      "letters": ["\""]
+    },
+    {
+      "pos": "C",
+      "letters": ["."]
+    },
+    {
+      "pos": "V",
+      "letters": [":"]
+    },
+    {
+      "pos": "B",
+      "letters": [";"]
+    },
+    {
+      "pos": "N",
+      "letters": ["!"]
+    },
+    {
+      "pos": "M",
+      "letters": ["?"]
+    },
+    {
+      "pos": ",",
+      "letters": ["'"]
+    },
+    {
+      "pos": ".",
+      "letters": ["~"]
+    }
+  ]
+}
