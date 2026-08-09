@@ -21,6 +21,9 @@
           # lua
           stylua
 
+          # python
+          ruff
+
           # markdown
           prettier
         ];

@@ -1,5 +1,5 @@
-# Format + lint nix, shell, lua, and markdown. Tools come from the flake
-# devShell (`nix develop`); the git hook is installed by its shellHook.
+# Format + lint nix, shell, lua, python, and markdown. Tools come from the
+# flake devShell (`nix develop`); the git hook is installed by its shellHook.
 default_stages: [pre-commit]
 
 repos:
@@ -40,10 +40,25 @@ repos:
         entry: stylua
         types: [lua]
 
-      # ---- markdown ----
+      # ---- python ----
+      - id: ruff-format
+        name: ruff-format
+        language: system
+        entry: ruff format
+        types: [python]
+
+      - id: ruff
+        name: ruff
+        language: system
+        entry: ruff check --fix
+        types: [python]
+
+      # ---- markdown / json / yaml ----
+      # prettier's json parser keeps `//` comments, which the klfc layout
+      # files under modules/programs/keyboard/layouts are allowed to use.
       - id: prettier
         name: prettier
         language: system
         entry: prettier --write
-        types_or: [markdown]
+        types_or: [markdown, json, yaml]
         exclude: ^flake\.lock$

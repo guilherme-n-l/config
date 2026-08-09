@@ -1,6 +1,6 @@
 {
   "model": "opus",
-  "enabledPlugins": { },
+  "enabledPlugins": {},
   "effortLevel": "xhigh",
   "theme": "custom:kanagawa-dragon",
   "tui": "fullscreen"
