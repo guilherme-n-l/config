@@ -4,14 +4,17 @@
 nix build github:guilherme-n-l/config#keyboard-windows
 ```
 
-That gives you `result/us/` and `result/abnt2/`, each holding a **PKL** tree and
-a **KLC** source. Prefer PKL.
+That gives you `result/pkl/`, one **PKL** tree holding both layouts, and
+`result/klc/` with the **KLC** sources. Prefer PKL.
 
 ## PKL (recommended, no MSKLC)
 
 [Portable Keyboard Layout][pkl] is a resident AutoHotkey program, so it needs no
-admin rights, no reboot, and no MSKLC. Copy `result/<layout>/` onto the Windows
+admin rights, no reboot, and no MSKLC. Copy `result/pkl/` onto the Windows
 machine and run `pkl.exe`; add a shortcut to `shell:startup` to make it stick.
+Both layouts live in the same tree — **Ctrl+Shift+2** switches between them
+(`changeLayoutHotkey` in `pkl.ini`), and the first in the `layout` list is the
+one active at startup.
 
 It is also the only route that carries **CapsLock → Escape**, which the `.klc`
 format cannot express at all.
@@ -20,7 +23,7 @@ format cannot express at all.
 
 Use this only if you want a real installed layout DLL:
 
-1. [MSKLC][msklc] → **File → Load Source File...** → `result/<layout>/klc/*.klc`
+1. [MSKLC][msklc] → **File → Load Source File...** → `result/klc/*.klc`
 2. **Project → Build DLL and Setup Package**, then run the generated installer.
 
 The `.klc` files are re-encoded to UTF-16LE with a BOM and CRLF endings on the

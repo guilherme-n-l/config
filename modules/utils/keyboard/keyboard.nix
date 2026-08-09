@@ -106,6 +106,18 @@
 
       brSection = mkSection "br" "${generate}/abnt2/xkb/symbols/ABNT2-Guilh";
       usSection = mkSection "us" "${generate}/us/xkb/symbols/US-Guilh";
+
+      pklIni = pkgs.writeText "pkl.ini" ''
+        [pkl]
+        layout             = US-Guilh,ABNT2-Guilh
+        changeLayoutHotkey = ^+2
+        language           = auto
+        displayHelpImage   = no
+        compactMode        = no
+        altGrEqualsAltCtrl = no
+        suspendTimeOut     = 0
+        exitTimeOut        = 0
+      '';
     in
     {
       packages.keyboard-generated = generate;
@@ -135,18 +147,20 @@
 
       packages.keyboard-darwin-bundle = bundle;
 
-      # PKL runs the layout on Windows with no MSKLC and no admin rights, and
-      # unlike .klc it can carry CapsLock->Escape. The .klc files are kept for
-      # the MSKLC route, re-encoded to the UTF-16LE that MSKLC insists on.
+      # PKL runs the layouts on Windows with no MSKLC and no admin rights, and
+      # unlike .klc it can carry CapsLock->Escape. KLFC emits one PKL tree per
+      # layout, but pkl.exe itself takes a layout list, so both share one tree
+      # and changeLayoutHotkey cycles them. The .klc files are kept for the
+      # MSKLC route, re-encoded to the UTF-16LE that MSKLC insists on.
       packages.keyboard-windows = pkgs.runCommand "keyboard-windows" { } ''
-        mkdir -p "$out"
+        mkdir -p "$out/pkl/layouts" "$out/klc"
+        cp "${generate}/us/pkl/pkl.exe" "$out/pkl/pkl.exe"
+        cp ${pklIni} "$out/pkl/pkl.ini"
         for name in us abnt2; do
-          cp -r "${generate}/$name/pkl" "$out/$name"
-          chmod -R u+w "$out/$name"
-          mkdir -p "$out/$name/klc"
+          cp -r "${generate}/$name/pkl/layouts/." "$out/pkl/layouts/"
           for f in "${generate}/$name"/klc/*.klc; do
             ${lib.getExe pkgs.python3} ${./windows/to-msklc.py} \
-              "$f" "$out/$name/klc/$(basename "$f")"
+              "$f" "$out/klc/$(basename "$f")"
           done
         done
       '';
