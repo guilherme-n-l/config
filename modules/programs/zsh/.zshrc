@@ -152,8 +152,10 @@ dr() {
 
 	# Passed through the environment so the dev shell's bash can `eval` it after
 	# aliases are defined (alias expansion happens at parse time, so the command
-	# must be re-parsed via eval for shell aliases to take effect).
-	export DEVRUN_CMD="$*"
+	# must be re-parsed via eval for shell aliases to take effect). Each arg is
+	# %q-quoted so the re-parse preserves the original argv; %q leaves plain
+	# command words bare, so alias expansion still applies to "$1".
+	export DEVRUN_CMD="$(printf '%q ' "$@")"
 
 	# Selector for `nix print-dev-env`: a local shells/<name>.nix file, a flake
 	# installable, or nothing (the current project's default devShell).
