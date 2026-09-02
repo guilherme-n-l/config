@@ -13,6 +13,8 @@ in
       # LUA LSP
       lua-language-server
       stylua
+
+      ffmpeg
     ])
     ++ (with mypkgs; [
       neovim
