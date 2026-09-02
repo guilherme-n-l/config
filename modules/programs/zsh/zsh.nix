@@ -16,7 +16,7 @@
           {
             pkgs = wrapperPkgs;
             zdotdir = ./.;
-            extraPackages =
+            runtimePkgs =
               (with pkgs; [
                 # Utils
                 git
@@ -55,7 +55,7 @@
             { lib, config, ... }:
             {
               options.homebrew = lib.mkEnableOption "homebrew shell env";
-              config.zshrc.content = lib.optionalString pkgs.stdenv.isDarwin ''
+              config.zshrc.content = lib.optionalString pkgs.stdenv.hostPlatform.isDarwin ''
                 source ${config.zdotdir}/.darwin.sh
                 ${lib.optionalString config.homebrew "_eval_brew"}
               '';

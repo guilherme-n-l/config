@@ -31,6 +31,6 @@
           '';
     in
     {
-      packages.mpv = if pkgs.stdenv.isDarwin then darwinMpv else wrappedMpv;
+      packages.mpv = if pkgs.stdenv.hostPlatform.isDarwin then darwinMpv else wrappedMpv;
     };
 }
