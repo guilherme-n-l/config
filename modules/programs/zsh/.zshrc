@@ -295,6 +295,7 @@ alias sd="sudo shutdown -h now"
 alias rb="sudo shutdown -r now"
 alias fzfd="fd --hidden --type d | fzf"
 alias lg="lazygit"
+alias drlg="dr lazygit"
 alias gs="git status"
 alias gc="git commit"
 alias gcl="git clone"
@@ -307,6 +308,8 @@ alias gl="git log --graph --abbrev-commit --decorate"
 alias gwa="git worktree add"
 alias gwr="git worktree remove"
 alias gwl="git worktree list"
+alias nv="nvim"
+alias drnv="dr nvim"
 
 # Completion
 autoload -Uz compinit
