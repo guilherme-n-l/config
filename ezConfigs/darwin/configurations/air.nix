@@ -113,6 +113,8 @@ in
 
   homebrew = {
     brews = [
+      # AI
+      "opencode"
     ];
     casks = [
       # Web
@@ -132,9 +134,6 @@ in
 
       # Fun
       "spotify"
-
-      # AI
-      "claude-code@latest"
     ];
   };
 

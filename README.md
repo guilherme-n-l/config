@@ -10,6 +10,7 @@ github:guilherme-n-l/config#yazi
 github:guilherme-n-l/config#mpv
 github:guilherme-n-l/config#wezterm # Uses NixGL
 github:guilherme-n-l/config#claude-config # Syncs ~/.claude config
+github:guilherme-n-l/config#opencode-config # Syncs ~/.config/opencode config
 github:guilherme-n-l/config#flake-init # Personal flake scaffold
 ```
 

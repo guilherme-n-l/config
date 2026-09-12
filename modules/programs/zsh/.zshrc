@@ -310,6 +310,7 @@ alias gwr="git worktree remove"
 alias gwl="git worktree list"
 alias nv="nvim"
 alias drnv="dr nvim"
+alias oc="opencode"
 
 # Completion
 autoload -Uz compinit
