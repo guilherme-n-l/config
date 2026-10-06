@@ -15,11 +15,15 @@ in
       stylua
 
       ffmpeg
+      yt-dlp
+
+      nodejs_22
     ])
     ++ (with mypkgs; [
       neovim
       mpv
-    ]);
+    ])
+    ++ [ inputs.fc.packages.${system}.default ];
 
   fonts = with pkgs.nerd-fonts; [
     fira-code

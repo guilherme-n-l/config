@@ -13,6 +13,8 @@
     wrappers.url = "github:BirdeeHub/nix-wrapper-modules";
 
     nixgl.url = "github:nix-community/nixGL";
+
+    fc.url = "git+ssh://git@github.com/Fast-Check-In/fc?ref=refs/tags/2.8.1";
   };
   outputs =
     inputs:
