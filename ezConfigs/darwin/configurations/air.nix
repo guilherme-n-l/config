@@ -147,6 +147,11 @@ in
       "nix-command"
       "flakes"
     ];
+    gc = {
+      automatic = true;
+      options = "--delete-old";
+    };
+    optimise.automatic = true;
   };
   nixpkgs.hostPlatform = "aarch64-darwin";
 }
