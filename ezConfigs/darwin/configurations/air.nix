@@ -124,6 +124,10 @@ in
       # Productivity
       "libreoffice"
 
+      # Net
+      "mkcert"
+      "nss"
+
       # Utils
       "iterm2"
       "keepassxc"
