@@ -138,6 +138,7 @@ in
 
       # Fun
       "spotify"
+      "calibre"
     ];
   };
 
