@@ -20,6 +20,7 @@
               (with pkgs; [
                 # Utils
                 git
+                forgejo-cli # fj, the Forgejo client (like gh)
                 tealdeer
                 lazygit
 
@@ -47,6 +48,8 @@
                 ripgrep
                 glow
               ]);
+            # fj takes the host from a repo's git remote; this is the one it uses elsewhere (no -H).
+            env.FJ_FALLBACK_HOST = "https://git.pururin.internal";
             env.FZF_KEY_BINDINGS = "${pkgs.fzf}/share/fzf/key-bindings.zsh";
             env.ZSH_FZF_TAB_PLUGIN = "${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh";
             env.ZSH_SYNTAX_HIGHLIGHTING_PLUGIN = "${pkgs.zsh-syntax-highlighting}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh";
