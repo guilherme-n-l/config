@@ -115,6 +115,10 @@ in
     brews = [
       # AI
       "opencode"
+
+      # Net (formulae, not casks)
+      "mkcert"
+      "nss"
     ];
     casks = [
       # Web
@@ -123,10 +127,6 @@ in
 
       # Productivity
       "libreoffice"
-
-      # Net
-      "mkcert"
-      "nss"
 
       # Utils
       "iterm2"
